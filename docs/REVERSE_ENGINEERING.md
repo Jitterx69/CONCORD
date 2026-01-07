@@ -3,6 +3,13 @@
 **System**: Constraint-Oriented Narrative Consistency Decision System  
 **Purpose**: Detect logical inconsistencies in character backstories against novel content  
 **Architecture**: Logic-Driven RAG Pipeline with LLM-as-Tool
+> [!IMPORTANT]
+> **v2.0 Update**: This documentation covers the core system. The final submission includes a v2.0 enhanced pipeline (`reasoning_pipeline.py`) with:
+> - **Distributed Retrieval**: Stratified sampling (Early/Mid/Late)
+> - **Temporal & Causal Checkers**: Explicit logic for character arcs and reachability
+> - **Conservative Synthesis**: "One hard violation = Reject" logic
+> - **Implicit Constraint Detection**: Irreversibility rules
+
 
 ---
 

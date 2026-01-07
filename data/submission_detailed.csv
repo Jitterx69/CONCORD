@@ -1,0 +1,61 @@
+id,label,reasoning,confidence,violation_type
+95,contradict,Multiple issues: FACT: Learning that Villefort meant to denounce him to Louis XVIII.; FACT: Noirtier pre-emptively handed the conspiracy dossier to a British spy.,0.85,SOFT_ACCUMULATION
+136,contradict,Multiple issues: FACT: He lived on a small island from 1800 onward.; FACT: He drafted a vast work on human intelligence while sending chapters out by secret courier.,0.85,SOFT_ACCUMULATION
+59,contradict,FACT: He slipped captivity.,0.7,SOFT_VIOLATION
+60,contradict,"Multiple issues: FACT: First rescue: in 1852 an avalanche buried a silver-prospecting caravan.; FACT: Thalcave led a night dig that saved eight survivors, among them French geographer Roux.",0.85,SOFT_ACCUMULATION
+124,contradict,Multiple issues: FACT: On the Marseille quay he noticed young Caderousse stealing a mooring rope.; FACT: He said nothing.,0.85,SOFT_ACCUMULATION
+111,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+135,contradict,"Multiple issues: FACT: He was a failed 1796 coup.; FACT: He spent four years writing treatises on philosophy, science, and religion.",0.85,SOFT_ACCUMULATION
+27,contradict,Multiple issues: FACT: He was twelve years old.; FACT: He ran away to the docks.,0.85,SOFT_ACCUMULATION
+110,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+42,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+56,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+80,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+28,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+101,contradict,Multiple issues: FACT: He was at the age of eighteen.; FACT: He joined a radical republican cell.,0.85,SOFT_ACCUMULATION
+91,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+24,contradict,Multiple issues: FACT: He proposed a South-American trade route to the naval board.; FACT: He was transferred to London.,0.85,SOFT_ACCUMULATION
+119,contradict,"Multiple issues: FACT: He was confined in Fenestrella Fortress.; FACT: He scratched ""On Ancient Mediterranean Routes"" into limestone with a nail.",0.85,SOFT_ACCUMULATION
+93,contradict,"FACT: He left traceable evidence—copies of the ciphered letters hidden inside oak barrels in his own vineyard, later unearthed by Villefort.",0.7,SOFT_VIOLATION
+72,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+16,contradict,Multiple issues: TEMPORAL: The proposed backstory for Jacques Paganel is that he was born in Calcutta to a British merchant fam; FACT: He was born in Calcutta.,0.85,SOFT_ACCUMULATION
+30,contradict,Multiple issues: FACT: He joined the Indian-Ocean pirate crew Black Tide.; FACT: He became second mate within three years.,0.85,SOFT_ACCUMULATION
+97,contradict,Multiple issues: FACT: Knowledge gathered while experimenting on prisoners.; FACT: Let him recognise Barrois’ symptoms instantly.,0.85,SOFT_ACCUMULATION
+22,contradict,"Multiple issues: FACT: He secretly helped anti-colonial groups ferry medicine and supplies to civilians.; FACT: He adopted the creed of ""quiet chivalry for the weak.""",0.85,SOFT_ACCUMULATION
+53,contradict,"FACT: Badly hurt, he chewed herbs to staunch the bleeding and survived.",0.7,SOFT_VIOLATION
+58,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+81,contradict,Multiple issues: FACT: He was born in 1820.; FACT: He was a sailor.,0.85,SOFT_ACCUMULATION
+47,contradict,Multiple issues: FACT: Colonists killed his father for refusing to reveal migration routes.; FACT: The thirteen-year-old fled alone.,0.85,SOFT_ACCUMULATION
+7,contradict,Multiple issues: FACT: He led a scientific party.; FACT: He insisted on travelling light.,0.85,SOFT_ACCUMULATION
+121,contradict,Multiple issues: FACT: He was aboard the prison transport.; FACT: He met Edmond Dantès' father.,0.85,SOFT_ACCUMULATION
+129,contradict,Multiple issues: FACT: He learned to carve fish-bone pen-nibs from an old Macao watchmaker.; FACT: He pursued scholarship without proper tools.,0.85,SOFT_ACCUMULATION
+51,contradict,FACT: Horse-thieves attacked.,0.7,SOFT_VIOLATION
+127,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+133,contradict,Multiple issues: FACT: He was a university lecturer.; FACT: He believed in fusing religion and reason.,0.85,SOFT_ACCUMULATION
+52,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+114,contradict,Multiple issues: FACT: He entered Bologna University in 1832.; FACT: He read theology and chemistry.,0.85,SOFT_ACCUMULATION
+2,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+33,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+15,contradict,FACT: He was born in 1820.,0.7,SOFT_VIOLATION
+82,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+37,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+3,contradict,Multiple issues: FACT: He left home after his mother died.; FACT: He carried the Polynesian nautical charts bequeathed to him by his mother.,0.85,SOFT_ACCUMULATION
+103,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+94,contradict,FACT: He allowed his private doctor to test a new sedative on political prisoners.,0.7,SOFT_VIOLATION
+85,contradict,FACT: He heard that foreigners sought the missing captain's daughter.,0.7,SOFT_VIOLATION
+21,contradict,"FACT: The Royal Navy frigate HMS Austin, bound for Australia and New Zealand under Lieutenant Grant, quietly promoted the sympathetic young sailor to ship’s assistant.",0.7,SOFT_VIOLATION
+49,contradict,FACT: He dodged bandits.,0.7,SOFT_VIOLATION
+140,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+64,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+131,contradict,Multiple issues: FACT: He was a declining Italian noble house.; FACT: He devoured the family library.,0.85,SOFT_ACCUMULATION
+61,contradict,Multiple issues: FACT: He was a slave-raider.; FACT: He seized his little sister Nawee.,0.85,SOFT_ACCUMULATION
+86,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+38,contradict,"Multiple issues: FACT: He was born in 1820.; FACT: During a storm on a convoy run, he insisted on saving people but was reprimanded for ""disrupting military order.""",0.85,SOFT_ACCUMULATION
+132,contradict,Multiple issues: FACT: He was by eighteen at Rome University.; FACT: He was fluent in several languages.,0.85,SOFT_ACCUMULATION
+77,contradict,Multiple issues: FACT: As a boy he was rescued by British biologist Wallace.; FACT: He was rescued by British biologist Wallace.,0.85,SOFT_ACCUMULATION
+70,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+115,contradict,Multiple issues: FACT: He was a Jesuit novice.; FACT: He was sent to Goa.,0.85,SOFT_ACCUMULATION
+78,contradict,Multiple issues: FACT: He was born in 1820.; FACT: His father guarded the island’s paramount chief.,0.85,SOFT_ACCUMULATION
+87,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+75,consistent,"All checks passed: causal reachability, temporal arc, implicit constraints, atomic facts",0.9,VERIFIED
+44,contradict,Multiple issues: FACT: He was born in 1820.; FACT: He was a sailor.,0.85,SOFT_ACCUMULATION
