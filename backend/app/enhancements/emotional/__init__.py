@@ -1,0 +1,3 @@
+"""
+Emotional package initialization
+"""
