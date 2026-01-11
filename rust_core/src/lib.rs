@@ -80,8 +80,6 @@ impl GraphWalker {
         cycles
     }
 
-
-
     /// Identifies isolated communities using Connected Components.
     fn detect_communities(&self) -> Vec<HashSet<String>> {
         let mut communities = Vec::new();
