@@ -2,8 +2,11 @@ use pyo3::prelude::*;
 use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
 
+#![allow(non_local_definitions)] // Suppress pyo3 macro warning
+
 #[pyclass]
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 struct CausalNode {
     id: String,
     dependents: Vec<String>,
@@ -124,7 +127,7 @@ impl GraphWalker {
 
         for _ in 0..iterations {
             let mut new_ranks = HashMap::new();
-            for (node_id, _) in &self.nodes {
+            for node_id in self.nodes.keys() {
                 let mut rank_sum = 0.0;
                 // Note: Simplified reverse lookup for MVP. Production would use an adjacency matrix.
                 for (other_id, other_node) in &self.nodes {

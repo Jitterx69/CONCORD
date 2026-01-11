@@ -1,8 +1,6 @@
 use rdkafka::config::ClientConfig;
-use rdkafka::consumer::{BaseConsumer, Consumer, StreamConsumer};
-use rdkafka::message::{Headers, Message};
-use rdkafka::util::get_rdkafka_version;
-use std::time::Duration;
+use rdkafka::consumer::{Consumer, StreamConsumer};
+use rdkafka::message::Message;
 use tokio::runtime::Runtime;
 
 pub struct CausalConsumer {
