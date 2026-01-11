@@ -40,7 +40,12 @@ class AgentMemory:
         """Store a new memory"""
         embedding = self.encoder.encode(text)
         self.memories.append(
-            {"entity_id": entity_id, "text": text, "embedding": embedding, "importance": importance}
+            {
+                "entity_id": entity_id,
+                "text": text,
+                "embedding": embedding,
+                "importance": importance,
+            }
         )
 
     def recall(self, entity_id: UUID, query: str, top_k: int = 3) -> List[str]:

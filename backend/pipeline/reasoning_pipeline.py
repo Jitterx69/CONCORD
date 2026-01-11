@@ -64,7 +64,10 @@ class NovelReader:
         books_to_search = []
         if book_name:
             for name in self.chunks.keys():
-                if book_name.lower() in name.lower() or name.lower() in book_name.lower():
+                if (
+                    book_name.lower() in name.lower()
+                    or name.lower() in book_name.lower()
+                ):
                     books_to_search.append(name)
         if not books_to_search:
             books_to_search = list(self.chunks.keys())
@@ -168,7 +171,12 @@ class ImplicitConstraintChecker:
                     later_years = re.findall(r"(\d{4})", evidence_lower)
                     for year_str in later_years:
                         year = int(year_str)
-                        if year > event_year and event in ["death", "died", "killed", "executed"]:
+                        if year > event_year and event in [
+                            "death",
+                            "died",
+                            "killed",
+                            "executed",
+                        ]:
                             violations.append(
                                 f"IMPLICIT: Character active in {year} after {event} in {event_year}"
                             )
@@ -201,7 +209,9 @@ class CausalReachabilityChecker:
         self.llm = model
         self.device = device
 
-    def check_reachability(self, backstory: str, evidence: str, character: str) -> Tuple[bool, str]:
+    def check_reachability(
+        self, backstory: str, evidence: str, character: str
+    ) -> Tuple[bool, str]:
         """
         Key distinction:
         - Plausibility: "Does this sound reasonable?" (BAD)
@@ -233,11 +243,16 @@ KNOWN NARRATIVE EVENTS (from novel):
 
 Could this backstory causally lead to these events?"""
 
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-        prompt = self.tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self.tok(prompt, return_tensors="pt", truncation=True, max_length=1500).to(
-            self.device
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        prompt = self.tok.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
         )
+        inputs = self.tok(
+            prompt, return_tensors="pt", truncation=True, max_length=1500
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.llm.generate(**inputs, max_new_tokens=50, do_sample=False)
@@ -288,11 +303,16 @@ LATE NARRATIVE (later in story):
 
 Is the character arc consistent with the backstory?"""
 
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-        prompt = self.tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self.tok(prompt, return_tensors="pt", truncation=True, max_length=1200).to(
-            self.device
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        prompt = self.tok.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
         )
+        inputs = self.tok(
+            prompt, return_tensors="pt", truncation=True, max_length=1200
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.llm.generate(**inputs, max_new_tokens=50, do_sample=False)
@@ -335,7 +355,12 @@ class RuleBasedChecker:
                 pass
 
         # Rule 3: Contradiction keywords
-        hard_contradictions = ["never existed", "impossible", "cannot be", "didn't happen"]
+        hard_contradictions = [
+            "never existed",
+            "impossible",
+            "cannot be",
+            "didn't happen",
+        ]
         for phrase in hard_contradictions:
             if phrase in content_lower:
                 violations.append(f"HARD: Contradiction signal '{phrase}'")
@@ -368,7 +393,9 @@ class ConsistencyChecker:
         self.rule_checker = RuleBasedChecker()
         self.implicit_checker = ImplicitConstraintChecker()
         self.causal_checker = CausalReachabilityChecker(self.tok, self.llm, self.device)
-        self.temporal_checker = TemporalConsistencyChecker(self.tok, self.llm, self.device)
+        self.temporal_checker = TemporalConsistencyChecker(
+            self.tok, self.llm, self.device
+        )
 
     def decompose_claim(self, text):
         """Split backstory into atomic facts"""
@@ -382,11 +409,16 @@ Output:
 - He hated onions."""
 
         user = f'Input: "{text[:500]}"\nOutput:'
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-        prompt = self.tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self.tok(prompt, return_tensors="pt", truncation=True, max_length=1024).to(
-            self.device
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        prompt = self.tok.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
         )
+        inputs = self.tok(
+            prompt, return_tensors="pt", truncation=True, max_length=1024
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.llm.generate(**inputs, max_new_tokens=200, do_sample=False)
@@ -394,7 +426,9 @@ Output:
         response = self.tok.decode(
             outputs[0][inputs.input_ids.shape[1] :], skip_special_tokens=True
         ).strip()
-        facts = [line.strip("- ").strip() for line in response.split("\n") if line.strip()]
+        facts = [
+            line.strip("- ").strip() for line in response.split("\n") if line.strip()
+        ]
         return facts if facts else [text[:200]]
 
     def verify_fact(self, fact, evidence_text, character):
@@ -405,17 +439,24 @@ Output:
 Reply: CONSISTENT or CONTRADICT"""
 
         user = f"Character: {character}\nCLAIM: {fact}\nEVIDENCE: {evidence_text[:600]}\nVERDICT:"
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-        prompt = self.tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self.tok(prompt, return_tensors="pt", truncation=True, max_length=1200).to(
-            self.device
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        prompt = self.tok.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
         )
+        inputs = self.tok(
+            prompt, return_tensors="pt", truncation=True, max_length=1200
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.llm.generate(**inputs, max_new_tokens=10, do_sample=False)
 
         response = (
-            self.tok.decode(outputs[0][inputs.input_ids.shape[1] :], skip_special_tokens=True)
+            self.tok.decode(
+                outputs[0][inputs.input_ids.shape[1] :], skip_special_tokens=True
+            )
             .strip()
             .upper()
         )
@@ -437,8 +478,12 @@ Reply: CONSISTENT or CONTRADICT"""
 
         # Separate early/late evidence
         sorted_evidence = sorted(evidence_list, key=lambda x: x.position)
-        early_evidence = " ".join([e.text for e in sorted_evidence[: len(sorted_evidence) // 2]])
-        late_evidence = " ".join([e.text for e in sorted_evidence[len(sorted_evidence) // 2 :]])
+        early_evidence = " ".join(
+            [e.text for e in sorted_evidence[: len(sorted_evidence) // 2]]
+        )
+        late_evidence = " ".join(
+            [e.text for e in sorted_evidence[len(sorted_evidence) // 2 :]]
+        )
 
         hard_violations = []
         soft_violations = []
@@ -450,7 +495,9 @@ Reply: CONSISTENT or CONTRADICT"""
                 hard_violations.append(v)
 
         # PHASE 2: Implicit constraint check
-        implicit_violations = self.implicit_checker.detect_violations(backstory, all_evidence)
+        implicit_violations = self.implicit_checker.detect_violations(
+            backstory, all_evidence
+        )
         for v in implicit_violations:
             hard_violations.append(v)
 

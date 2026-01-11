@@ -85,13 +85,17 @@ async def get_narrative(narrative_id: UUID):
     Get a specific narrative by ID.
     """
     if narrative_id not in _narratives:
-        raise HTTPException(status_code=404, detail=f"Narrative {narrative_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Narrative {narrative_id} not found"
+        )
 
     return _narratives[narrative_id]
 
 
 @router.put("/narratives/{narrative_id}")
-async def update_narrative(narrative_id: UUID, request: NarrativeUpdateRequest, req: Request):
+async def update_narrative(
+    narrative_id: UUID, request: NarrativeUpdateRequest, req: Request
+):
     """
     Add new text to an existing narrative.
 
@@ -99,7 +103,9 @@ async def update_narrative(narrative_id: UUID, request: NarrativeUpdateRequest, 
     the existing narrative before being added.
     """
     if narrative_id not in _narratives:
-        raise HTTPException(status_code=404, detail=f"Narrative {narrative_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Narrative {narrative_id} not found"
+        )
 
     narrative = _narratives[narrative_id]
 
@@ -137,7 +143,9 @@ async def update_narrative(narrative_id: UUID, request: NarrativeUpdateRequest, 
         }
 
     # Add segment
-    position = request.position if request.position is not None else len(narrative.segments)
+    position = (
+        request.position if request.position is not None else len(narrative.segments)
+    )
     segment = NarrativeSegment(text=request.text, position=position)
 
     if request.position is not None:
@@ -175,7 +183,9 @@ async def delete_narrative(narrative_id: UUID):
     Delete a narrative.
     """
     if narrative_id not in _narratives:
-        raise HTTPException(status_code=404, detail=f"Narrative {narrative_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Narrative {narrative_id} not found"
+        )
 
     del _narratives[narrative_id]
     return {"deleted": True, "narrative_id": str(narrative_id)}
@@ -187,7 +197,9 @@ async def analyze_narrative(narrative_id: UUID, req: Request):
     Perform a complete consistency analysis on an existing narrative.
     """
     if narrative_id not in _narratives:
-        raise HTTPException(status_code=404, detail=f"Narrative {narrative_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Narrative {narrative_id} not found"
+        )
 
     narrative = _narratives[narrative_id]
     full_text = " ".join([seg.text for seg in narrative.segments])
@@ -215,7 +227,9 @@ async def get_narrative_timeline(narrative_id: UUID, req: Request):
     Extract and visualize the timeline from a narrative.
     """
     if narrative_id not in _narratives:
-        raise HTTPException(status_code=404, detail=f"Narrative {narrative_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Narrative {narrative_id} not found"
+        )
 
     narrative = _narratives[narrative_id]
     full_text = " ".join([seg.text for seg in narrative.segments])
@@ -232,7 +246,9 @@ async def get_narrative_entities(narrative_id: UUID, req: Request):
     Get all entities mentioned in a narrative.
     """
     if narrative_id not in _narratives:
-        raise HTTPException(status_code=404, detail=f"Narrative {narrative_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Narrative {narrative_id} not found"
+        )
 
     narrative = _narratives[narrative_id]
     full_text = " ".join([seg.text for seg in narrative.segments])
@@ -240,4 +256,8 @@ async def get_narrative_entities(narrative_id: UUID, req: Request):
     ml_service = req.app.state.ml_service
     entities = await ml_service.extract_entities(full_text)
 
-    return {"narrative_id": str(narrative_id), "entities": entities, "count": len(entities)}
+    return {
+        "narrative_id": str(narrative_id),
+        "entities": entities,
+        "count": len(entities),
+    }

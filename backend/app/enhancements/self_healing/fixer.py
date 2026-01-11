@@ -133,16 +133,24 @@ class NarrativeFixer:
         # Generate fixes based on issue type
         if issue.type == ConstraintType.FACTUAL:
             suggestions.extend(
-                await self._generate_factual_fixes(issue, relevant_facts, narrative_text)
+                await self._generate_factual_fixes(
+                    issue, relevant_facts, narrative_text
+                )
             )
         elif issue.type == ConstraintType.TEMPORAL:
-            suggestions.extend(await self._generate_temporal_fixes(issue, narrative_text))
+            suggestions.extend(
+                await self._generate_temporal_fixes(issue, narrative_text)
+            )
         elif issue.type == ConstraintType.BEHAVIORAL:
-            suggestions.extend(await self._generate_behavioral_fixes(issue, narrative_text))
+            suggestions.extend(
+                await self._generate_behavioral_fixes(issue, narrative_text)
+            )
         elif issue.type == ConstraintType.CAUSAL:
             suggestions.extend(await self._generate_causal_fixes(issue, narrative_text))
         elif issue.type == ConstraintType.SPATIAL:
-            suggestions.extend(await self._generate_spatial_fixes(issue, narrative_text))
+            suggestions.extend(
+                await self._generate_spatial_fixes(issue, narrative_text)
+            )
         else:
             # Generic fix
             suggestions.append(await self._generate_generic_fix(issue))
@@ -157,13 +165,17 @@ class NarrativeFixer:
 
         return suggestions
 
-    async def _get_relevant_facts(self, issue: ConsistencyIssue, facts: List[Fact]) -> List[Fact]:
+    async def _get_relevant_facts(
+        self, issue: ConsistencyIssue, facts: List[Fact]
+    ) -> List[Fact]:
         """Get facts relevant to an issue."""
         relevant = []
 
         # Extract potential subjects from issue description
         words = issue.description.split()
-        potential_subjects = [w.strip("'\".,") for w in words if w[0].isupper() and len(w) > 1]
+        potential_subjects = [
+            w.strip("'\".,") for w in words if w[0].isupper() and len(w) > 1
+        ]
 
         for fact in facts:
             if any(subj.lower() == fact.subject.lower() for subj in potential_subjects):
@@ -288,7 +300,9 @@ class NarrativeFixer:
         character = name_match.group(1) if name_match else "the character"
 
         # Option 1: Add mood transition
-        transition = self.TRANSITION_PHRASES["mood_shift"][0].format(character=character)
+        transition = self.TRANSITION_PHRASES["mood_shift"][0].format(
+            character=character
+        )
         suggestions.append(
             FixSuggestion(
                 id=uuid4(),
@@ -330,7 +344,9 @@ class NarrativeFixer:
         suggestions = []
 
         # Option 1: Add foreshadowing phrase
-        foreshadowing = "Little did they know, what would happen next would change everything. "
+        foreshadowing = (
+            "Little did they know, what would happen next would change everything. "
+        )
         suggestions.append(
             FixSuggestion(
                 id=uuid4(),
@@ -422,7 +438,9 @@ class NarrativeFixer:
             auto_applicable=False,
         )
 
-    async def apply_fix(self, suggestion: FixSuggestion, narrative_text: str) -> Tuple[str, bool]:
+    async def apply_fix(
+        self, suggestion: FixSuggestion, narrative_text: str
+    ) -> Tuple[str, bool]:
         """
         Apply a fix suggestion to the narrative text.
 

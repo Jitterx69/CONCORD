@@ -10,7 +10,11 @@ router = APIRouter()
 @router.get("/profile/{entity_id}")
 async def get_psych_profile(entity_id: UUID):
     """Get the psychological profile of an agent"""
-    return {"entity_id": entity_id, "traits": ["brave", "loyal"], "goals": ["protect the queen"]}
+    return {
+        "entity_id": entity_id,
+        "traits": ["brave", "loyal"],
+        "goals": ["protect the queen"],
+    }
 
 
 @router.post("/check-consistency")

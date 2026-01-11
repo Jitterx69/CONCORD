@@ -69,7 +69,11 @@ class Entity(BaseModel):
             "example": {
                 "name": "Alice",
                 "type": "character",
-                "attributes": {"age": 25, "occupation": "detective", "hair_color": "brown"},
+                "attributes": {
+                    "age": 25,
+                    "occupation": "detective",
+                    "hair_color": "brown",
+                },
             }
         }
 
@@ -144,10 +148,14 @@ class Fact(BaseModel):
 
     # Causal tracking
     validity_status: FactValidity = FactValidity.VALID
-    dependencies: List[UUID] = Field(default_factory=list)  # Facts that caused this fact
+    dependencies: List[UUID] = Field(
+        default_factory=list
+    )  # Facts that caused this fact
 
     # Quantum tracking
-    world_id: Optional[UUID] = None  # None = Universal Truth, UUID = Specific World State
+    world_id: Optional[UUID] = (
+        None  # None = Universal Truth, UUID = Specific World State
+    )
 
     class Config:
         json_schema_extra = {
@@ -264,8 +272,12 @@ class PsychProfile(BaseModel):
     """Psychological profile for a BDI Agent"""
 
     entity_id: UUID
-    personality_traits: List[str] = Field(default_factory=list)  # e.g. ["impulsive", "loyal"]
-    core_values: List[str] = Field(default_factory=list)  # e.g. ["family first", "honesty"]
+    personality_traits: List[str] = Field(
+        default_factory=list
+    )  # e.g. ["impulsive", "loyal"]
+    core_values: List[str] = Field(
+        default_factory=list
+    )  # e.g. ["family first", "honesty"]
     secrets: List[str] = Field(default_factory=list)  # Hidden facts known only to agent
     goals: List[str] = Field(default_factory=list)  # Current active goals
 

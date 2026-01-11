@@ -161,7 +161,15 @@ class EmotionalAnalyzer:
             "intensity_modifiers": {"slightly": 0.3, "completely": 1.0},
         },
         "trust": {
-            "words": ["trust", "faith", "confidence", "belief", "reliance", "assured", "secure"],
+            "words": [
+                "trust",
+                "faith",
+                "confidence",
+                "belief",
+                "reliance",
+                "assured",
+                "secure",
+            ],
             "intensity_modifiers": {"somewhat": 0.5, "completely": 1.0, "blindly": 1.0},
         },
     }
@@ -178,7 +186,9 @@ class EmotionalAnalyzer:
         self._character_moods: Dict[str, List[CharacterMood]] = {}
         self._relationships: List[EmotionalRelationship] = []
 
-    async def analyze_character_emotions(self, text: str, entities: List[Entity]) -> Dict[str, Any]:
+    async def analyze_character_emotions(
+        self, text: str, entities: List[Entity]
+    ) -> Dict[str, Any]:
         """
         Analyze emotional states of characters throughout the narrative.
 
@@ -248,7 +258,9 @@ class EmotionalAnalyzer:
             "issues": issues,
         }
 
-    async def _extract_character_moods(self, text: str, character_name: str) -> List[CharacterMood]:
+    async def _extract_character_moods(
+        self, text: str, character_name: str
+    ) -> List[CharacterMood]:
         """Extract mood states for a specific character."""
         moods = []
         sentences = text.split(".")
@@ -267,7 +279,9 @@ class EmotionalAnalyzer:
                     if word in sentence_lower:
                         # Check for intensity modifiers
                         intensity = 0.6  # Default
-                        for modifier, mod_intensity in data["intensity_modifiers"].items():
+                        for modifier, mod_intensity in data[
+                            "intensity_modifiers"
+                        ].items():
                             if modifier in sentence_lower:
                                 intensity = mod_intensity
                                 break
@@ -275,7 +289,8 @@ class EmotionalAnalyzer:
                         # Try to find trigger
                         trigger = None
                         trigger_match = re.search(
-                            rf"{word}.*?(?:because|due to|after|when)\s+([^.]+)", sentence_lower
+                            rf"{word}.*?(?:because|due to|after|when)\s+([^.]+)",
+                            sentence_lower,
                         )
                         if trigger_match:
                             trigger = trigger_match.group(1).strip()[:50]
@@ -377,15 +392,29 @@ class EmotionalAnalyzer:
                     sentence_lower = sentence.lower()
 
                     # Check for relationship indicators
-                    if any(w in sentence_lower for w in ["love", "loves", "adores", "cherish"]):
+                    if any(
+                        w in sentence_lower
+                        for w in ["love", "loves", "adores", "cherish"]
+                    ):
                         emotions.append("love")
-                    if any(w in sentence_lower for w in ["hate", "hates", "despise", "loathe"]):
+                    if any(
+                        w in sentence_lower
+                        for w in ["hate", "hates", "despise", "loathe"]
+                    ):
                         emotions.append("hate")
-                    if any(w in sentence_lower for w in ["trust", "trusts", "believe", "rely"]):
+                    if any(
+                        w in sentence_lower
+                        for w in ["trust", "trusts", "believe", "rely"]
+                    ):
                         emotions.append("trust")
-                    if any(w in sentence_lower for w in ["fear", "fears", "afraid", "scared"]):
+                    if any(
+                        w in sentence_lower
+                        for w in ["fear", "fears", "afraid", "scared"]
+                    ):
                         emotions.append("fear")
-                    if any(w in sentence_lower for w in ["friend", "friends", "friendship"]):
+                    if any(
+                        w in sentence_lower for w in ["friend", "friends", "friendship"]
+                    ):
                         emotions.append("friendship")
                     if any(w in sentence_lower for w in ["enemy", "enemies", "rival"]):
                         emotions.append("rivalry")
@@ -426,8 +455,24 @@ class EmotionalAnalyzer:
 
         formal_words = {"therefore", "however", "moreover", "thus", "hereby", "whereby"}
         informal_words = {"gonna", "wanna", "kinda", "sorta", "yeah", "nope", "stuff"}
-        dark_words = {"death", "murder", "blood", "darkness", "horror", "terror", "doom"}
-        light_words = {"sunshine", "rainbow", "laughter", "play", "dance", "joy", "bright"}
+        dark_words = {
+            "death",
+            "murder",
+            "blood",
+            "darkness",
+            "horror",
+            "terror",
+            "doom",
+        }
+        light_words = {
+            "sunshine",
+            "rainbow",
+            "laughter",
+            "play",
+            "dance",
+            "joy",
+            "bright",
+        }
 
         for pos, sentence in enumerate(sentences):
             sentence_lower = sentence.lower()

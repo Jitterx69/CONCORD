@@ -33,7 +33,9 @@ class BDIEngine:
         intention = self._infer_intention(action_text)
 
         # 2. Derive Expected Goal (What SHOULD they have done?)
-        expected_goal = self.planner.formulate_goal(profile, f"Opportunity to {intention}")
+        expected_goal = self.planner.formulate_goal(
+            profile, f"Opportunity to {intention}"
+        )
 
         # 3. Compare
         # Simple LLM check for alignment
@@ -48,14 +50,17 @@ Expected Goal: {expected_goal}
 
 Verdict:"""
 
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
 
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024).to(
-            self.device
-        )
+        inputs = self.tokenizer(
+            prompt, return_tensors="pt", truncation=True, max_length=1024
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.model.generate(**inputs, max_new_tokens=50, do_sample=False)
@@ -65,7 +70,11 @@ Verdict:"""
         ).strip()
 
         is_consistent = "INCONSISTENT" not in response.upper()
-        return {"consistent": is_consistent, "reasoning": response, "expected_goal": expected_goal}
+        return {
+            "consistent": is_consistent,
+            "reasoning": response,
+            "expected_goal": expected_goal,
+        }
 
     def _infer_intention(self, action_text: str) -> str:
         """Helper to summarize action into an intention string"""

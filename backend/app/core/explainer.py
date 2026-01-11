@@ -123,7 +123,9 @@ class Explainer:
             "summary": f"{template.get('prefix', 'Issue')}: {issue.description}",
             "explanation": template.get("explanation", "").format(
                 subject=(
-                    issue.description.split("'")[1] if "'" in issue.description else "the narrative"
+                    issue.description.split("'")[1]
+                    if "'" in issue.description
+                    else "the narrative"
                 )
             ),
             "evidence": issue.evidence,
@@ -145,7 +147,9 @@ class Explainer:
         steps = []
 
         # Step 1: What was detected
-        steps.append(f"1. DETECTION: Found potential {issue.type.value} issue in the narrative")
+        steps.append(
+            f"1. DETECTION: Found potential {issue.type.value} issue in the narrative"
+        )
 
         # Step 2: What evidence supports it
         if issue.evidence:
@@ -156,7 +160,9 @@ class Explainer:
                 steps.append(f"   2.{i+1}. {evidence[:100]}...")
 
         # Step 3: Why it's a problem
-        steps.append(f"3. ANALYSIS: This creates a {issue.level.value} level inconsistency")
+        steps.append(
+            f"3. ANALYSIS: This creates a {issue.level.value} level inconsistency"
+        )
 
         # Step 4: Confidence assessment
         if issue.confidence >= 0.9:
@@ -197,7 +203,9 @@ class Explainer:
         }
         return descriptions.get(level, descriptions[ConsistencyLevel.WARNING])
 
-    async def suggest_fix(self, issue: ConsistencyIssue, facts: List[Fact]) -> Optional[str]:
+    async def suggest_fix(
+        self, issue: ConsistencyIssue, facts: List[Fact]
+    ) -> Optional[str]:
         """
         Generate a specific fix suggestion for an issue.
 
@@ -232,7 +240,9 @@ class Explainer:
 
         return fix
 
-    async def generate_report_summary(self, issues: List[ConsistencyIssue]) -> Dict[str, Any]:
+    async def generate_report_summary(
+        self, issues: List[ConsistencyIssue]
+    ) -> Dict[str, Any]:
         """
         Generate a summary report for multiple issues.
         """
@@ -251,12 +261,18 @@ class Explainer:
             breakdown[cat] = breakdown.get(cat, 0) + 1
 
         # Determine overall status
-        critical_count = len([i for i in issues if i.level == ConsistencyLevel.CRITICAL])
-        significant_count = len([i for i in issues if i.level == ConsistencyLevel.INCONSISTENT])
+        critical_count = len(
+            [i for i in issues if i.level == ConsistencyLevel.CRITICAL]
+        )
+        significant_count = len(
+            [i for i in issues if i.level == ConsistencyLevel.INCONSISTENT]
+        )
 
         if critical_count > 0:
             status = "Critical Issues Found"
-            message = f"Found {critical_count} critical issue(s) that must be addressed."
+            message = (
+                f"Found {critical_count} critical issue(s) that must be addressed."
+            )
         elif significant_count > 0:
             status = "Issues Found"
             message = f"Found {significant_count} significant issue(s) that should be reviewed."
@@ -275,7 +291,11 @@ class Explainer:
                 "warning": len(issues) - critical_count - significant_count,
             },
             "top_issues": [
-                {"type": i.type.value, "description": i.description[:100], "level": i.level.value}
+                {
+                    "type": i.type.value,
+                    "description": i.description[:100],
+                    "level": i.level.value,
+                }
                 for i in sorted(issues, key=lambda x: x.confidence, reverse=True)[:5]
             ],
         }

@@ -114,17 +114,27 @@ app.add_middleware(
 # Register routers
 app.include_router(health.router, prefix=settings.API_PREFIX, tags=["Health"])
 app.include_router(consistency.router, prefix=settings.API_PREFIX, tags=["Consistency"])
-app.include_router(knowledge.router, prefix=settings.API_PREFIX, tags=["Knowledge Graph"])
+app.include_router(
+    knowledge.router, prefix=settings.API_PREFIX, tags=["Knowledge Graph"]
+)
 app.include_router(narratives.router, prefix=settings.API_PREFIX, tags=["Narratives"])
 app.include_router(
-    simulation.router, prefix=f"{settings.API_PREFIX}/simulation", tags=["Narrative Holodeck"]
+    simulation.router,
+    prefix=f"{settings.API_PREFIX}/simulation",
+    tags=["Narrative Holodeck"],
 )
 app.include_router(
-    causality.router, prefix=f"{settings.API_PREFIX}/causality", tags=["Butterfly Effect"]
+    causality.router,
+    prefix=f"{settings.API_PREFIX}/causality",
+    tags=["Butterfly Effect"],
 )
-app.include_router(agents.router, prefix=f"{settings.API_PREFIX}/agents", tags=["BDI Agents"])
 app.include_router(
-    quantum.router, prefix=f"{settings.API_PREFIX}/quantum", tags=["Quantum Consistency"]
+    agents.router, prefix=f"{settings.API_PREFIX}/agents", tags=["BDI Agents"]
+)
+app.include_router(
+    quantum.router,
+    prefix=f"{settings.API_PREFIX}/quantum",
+    tags=["Quantum Consistency"],
 )
 
 

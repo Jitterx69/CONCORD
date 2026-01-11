@@ -50,7 +50,9 @@ class RepairAgent:
         for parent_id in fact.dependencies:
             parent = await self.kg.get_fact(parent_id)
             if parent:
-                parents_text.append(f"{parent.subject} {parent.predicate} {parent.object}")
+                parents_text.append(
+                    f"{parent.subject} {parent.predicate} {parent.object}"
+                )
 
         parents_str = "; ".join(parents_text)
 
@@ -66,7 +68,10 @@ DERIVED FACT (In Question): {fact.subject} {fact.predicate} {fact.object}
 
 Verdict:"""
 
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ]
 
         # Run inference
         input_ids = self.tokenizer.apply_chat_template(

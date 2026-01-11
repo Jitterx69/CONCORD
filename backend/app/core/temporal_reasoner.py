@@ -70,7 +70,9 @@ class TemporalReasoner:
         self._events: Dict[UUID, TemporalEvent] = {}
         self._timeline: List[TimelineEntry] = []
 
-    async def check_timeline(self, text: str, facts: List[Fact]) -> List[ConsistencyIssue]:
+    async def check_timeline(
+        self, text: str, facts: List[Fact]
+    ) -> List[ConsistencyIssue]:
         """
         Check temporal consistency of narrative text.
 
@@ -155,7 +157,10 @@ class TemporalReasoner:
 
             if has_temporal or pos == 0:  # Always include first sentence as anchor
                 event = TemporalEvent(
-                    id=uuid4(), description=sentence, position=pos, relative_time=relative_time
+                    id=uuid4(),
+                    description=sentence,
+                    position=pos,
+                    relative_time=relative_time,
                 )
                 events.append(event)
                 self._events[event.id] = event
@@ -184,7 +189,9 @@ class TemporalReasoner:
         if later.event.relative_time == "before":
             # This event claims to be "before" something, but appears later in text
             # Check if it references the earlier event
-            if self._references_event(later.event.description, earlier.event.description):
+            if self._references_event(
+                later.event.description, earlier.event.description
+            ):
                 return ConsistencyIssue(
                     type=ConstraintType.TEMPORAL,
                     level=ConsistencyLevel.WARNING,
@@ -207,14 +214,28 @@ class TemporalReasoner:
         words2 = set(text2.lower().split())
 
         # Filter common words
-        common_words = {"the", "a", "an", "is", "was", "were", "are", "he", "she", "it", "they"}
+        common_words = {
+            "the",
+            "a",
+            "an",
+            "is",
+            "was",
+            "were",
+            "are",
+            "he",
+            "she",
+            "it",
+            "they",
+        }
         words1 -= common_words
         words2 -= common_words
 
         overlap = words1 & words2
         return len(overlap) >= 2
 
-    async def _check_causality(self, text: str, facts: List[Fact]) -> List[ConsistencyIssue]:
+    async def _check_causality(
+        self, text: str, facts: List[Fact]
+    ) -> List[ConsistencyIssue]:
         """Check for cause-effect violations."""
         issues = []
 
@@ -239,7 +260,9 @@ class TemporalReasoner:
 
                     # Check if effect was mentioned before cause in the narrative
                     cause_first_pos = text.lower().find(cause.lower()[:20])
-                    effect_first_pos = text.lower().find(effect.lower()[:20]) if effect else -1
+                    effect_first_pos = (
+                        text.lower().find(effect.lower()[:20]) if effect else -1
+                    )
 
                     if effect_first_pos != -1 and effect_first_pos < cause_first_pos:
                         issues.append(
@@ -263,7 +286,9 @@ class TemporalReasoner:
         issues = []
 
         # Pattern for duration statements
-        duration_pattern = r"for\s+(\d+)\s+(years?|months?|weeks?|days?|hours?|minutes?)"
+        duration_pattern = (
+            r"for\s+(\d+)\s+(years?|months?|weeks?|days?|hours?|minutes?)"
+        )
 
         durations = []
         for match in re.finditer(duration_pattern, text, re.IGNORECASE):

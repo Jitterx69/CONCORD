@@ -118,7 +118,9 @@ class TestTemporalReasoner:
     @pytest.mark.asyncio
     async def test_extract_timeline(self, temporal_reasoner):
         """Test timeline extraction from narrative."""
-        text = "In the morning, Alice went to work. Later that evening, she returned home."
+        text = (
+            "In the morning, Alice went to work. Later that evening, she returned home."
+        )
 
         timeline = await temporal_reasoner.extract_timeline(text)
 
@@ -147,7 +149,9 @@ class TestEntityTracker:
     @pytest.mark.asyncio
     async def test_track_entity(self, entity_tracker):
         """Test entity tracking."""
-        entity = Entity(name="Alice", type=EntityType.CHARACTER, attributes={"archetype": "hero"})
+        entity = Entity(
+            name="Alice", type=EntityType.CHARACTER, attributes={"archetype": "hero"}
+        )
 
         await entity_tracker.track_entity(entity, position=0)
         profile = await entity_tracker.get_entity_profile(entity.id)

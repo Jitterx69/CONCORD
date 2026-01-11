@@ -19,9 +19,7 @@ class GoalPlanner:
             if torch.backends.mps.is_available()
             else "cuda" if torch.cuda.is_available() else "cpu"
         )
-        model_name = (
-            "distilgpt2"  # Switched from TinyLlama (4GB RAM) to DistilGPT2 (~500MB) for stability
-        )
+        model_name = "distilgpt2"  # Switched from TinyLlama (4GB RAM) to DistilGPT2 (~500MB) for stability
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -54,14 +52,17 @@ Current Situation: {context}
 
 What is their immediate goal?"""
 
-        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
 
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024).to(
-            self.device
-        )
+        inputs = self.tokenizer(
+            prompt, return_tensors="pt", truncation=True, max_length=1024
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.model.generate(**inputs, max_new_tokens=30, do_sample=False)

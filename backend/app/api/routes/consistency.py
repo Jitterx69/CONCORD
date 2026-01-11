@@ -61,7 +61,9 @@ async def check_consistency(request: ConsistencyCheckRequest, req: Request):
 
     # Temporal consistency
     if request.check_temporal:
-        temporal_issues = await temporal_reasoner.check_timeline(request.text, all_facts)
+        temporal_issues = await temporal_reasoner.check_timeline(
+            request.text, all_facts
+        )
         issues.extend(temporal_issues)
 
     # Entity behavioral consistency
@@ -102,10 +104,18 @@ async def check_consistency(request: ConsistencyCheckRequest, req: Request):
         level = ConsistencyLevel.CRITICAL
 
     # Category scores
-    factual_score = 1.0 - (len([i for i in issues if i.type == ConstraintType.FACTUAL]) * 0.15)
-    temporal_score = 1.0 - (len([i for i in issues if i.type == ConstraintType.TEMPORAL]) * 0.15)
-    causal_score = 1.0 - (len([i for i in issues if i.type == ConstraintType.CAUSAL]) * 0.15)
-    spatial_score = 1.0 - (len([i for i in issues if i.type == ConstraintType.SPATIAL]) * 0.15)
+    factual_score = 1.0 - (
+        len([i for i in issues if i.type == ConstraintType.FACTUAL]) * 0.15
+    )
+    temporal_score = 1.0 - (
+        len([i for i in issues if i.type == ConstraintType.TEMPORAL]) * 0.15
+    )
+    causal_score = 1.0 - (
+        len([i for i in issues if i.type == ConstraintType.CAUSAL]) * 0.15
+    )
+    spatial_score = 1.0 - (
+        len([i for i in issues if i.type == ConstraintType.SPATIAL]) * 0.15
+    )
     behavioral_score = 1.0 - (
         len([i for i in issues if i.type == ConstraintType.BEHAVIORAL]) * 0.15
     )

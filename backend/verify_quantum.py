@@ -25,14 +25,20 @@ def main():
     fact_dead = Fact(subject="Victim", predicate="is", object="dead", world_id=None)
 
     # Fork 1: Butler did it
-    world_butler = state_manager.fork_world(base_world.id, "Theory: Butler", fact_dead.id)
+    world_butler = state_manager.fork_world(
+        base_world.id, "Theory: Butler", fact_dead.id
+    )
     world_butler.probability = 0.5
-    fact_knife = Fact(subject="Weapon", predicate="is", object="knife", world_id=world_butler.id)
+    fact_knife = Fact(
+        subject="Weapon", predicate="is", object="knife", world_id=world_butler.id
+    )
 
     # Fork 2: Maid did it
     world_maid = state_manager.fork_world(base_world.id, "Theory: Maid", fact_dead.id)
     world_maid.probability = 0.5
-    fact_poison = Fact(subject="Weapon", predicate="is", object="poison", world_id=world_maid.id)
+    fact_poison = Fact(
+        subject="Weapon", predicate="is", object="poison", world_id=world_maid.id
+    )
 
     prob_engine.normalize_probabilities([world_butler, world_maid])
 
@@ -57,7 +63,9 @@ def main():
     # 3. Probability Update (Found a sheath matching knife)
     print("\n--- Evidence Found: Knife Sheath ---")
     print("Updating probabilities based on evidence supporting Butler...")
-    prob_engine.update_probabilities([world_butler, world_maid], fact_knife, [world_butler.id])
+    prob_engine.update_probabilities(
+        [world_butler, world_maid], fact_knife, [world_butler.id]
+    )
 
     print(f"World {world_butler.name}: P={world_butler.probability:.2f}")
     print(f"World {world_maid.name}: P={world_maid.probability:.2f}")

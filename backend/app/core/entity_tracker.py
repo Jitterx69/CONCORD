@@ -74,7 +74,10 @@ class EntityTracker:
         """Start tracking an entity."""
         if entity.id not in self._profiles:
             profile = EntityProfile(
-                entity=entity, first_mention=position, last_mention=position, mention_count=1
+                entity=entity,
+                first_mention=position,
+                last_mention=position,
+                mention_count=1,
             )
             self._profiles[entity.id] = profile
             self._name_to_id[entity.name.lower()] = entity.id
@@ -113,7 +116,9 @@ class EntityTracker:
         if entity_id in self._profiles:
             self._profiles[entity_id].behaviors.append(behavior.lower())
 
-    async def check_behavior(self, entities: List[Entity], text: str) -> List[ConsistencyIssue]:
+    async def check_behavior(
+        self, entities: List[Entity], text: str
+    ) -> List[ConsistencyIssue]:
         """
         Check for behavioral inconsistencies in the narrative.
 
@@ -148,7 +153,9 @@ class EntityTracker:
 
         return issues
 
-    async def _check_entity_behavior(self, entity: Entity, text: str) -> List[ConsistencyIssue]:
+    async def _check_entity_behavior(
+        self, entity: Entity, text: str
+    ) -> List[ConsistencyIssue]:
         """Check if entity's behavior in text is consistent with their profile."""
         issues = []
 
@@ -222,7 +229,9 @@ class EntityTracker:
         }
         return opposites.get(behavior)
 
-    async def _check_alive_status(self, entity: Entity, text: str) -> Optional[ConsistencyIssue]:
+    async def _check_alive_status(
+        self, entity: Entity, text: str
+    ) -> Optional[ConsistencyIssue]:
         """Check if a dead character is acting in the narrative."""
         if entity.id not in self._profiles:
             return None

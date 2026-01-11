@@ -11,7 +11,11 @@ router = APIRouter()
 @router.get("/health")
 async def health_check():
     """Basic health check endpoint"""
-    return {"status": "healthy", "service": "CONCORD", "timestamp": datetime.utcnow().isoformat()}
+    return {
+        "status": "healthy",
+        "service": "CONCORD",
+        "timestamp": datetime.utcnow().isoformat(),
+    }
 
 
 @router.get("/health/ready")

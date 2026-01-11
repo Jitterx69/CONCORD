@@ -102,7 +102,9 @@ class ConstraintEngine:
                 actual_value = str(fact.object).strip()
 
                 # Evaluate the constraint
-                satisfied = self._evaluate_operator(actual_value, operator, expected_value)
+                satisfied = self._evaluate_operator(
+                    actual_value, operator, expected_value
+                )
 
                 if not satisfied:
                     return ConsistencyIssue(
@@ -115,7 +117,10 @@ class ConstraintEngine:
                         description=f"Constraint violation: {constraint.description}. "
                         f"Expected {subject}.{attribute} {operator} {expected_value}, "
                         f"but found '{actual_value}'",
-                        evidence=[f"Constraint: {rule}", f"Actual value: {actual_value}"],
+                        evidence=[
+                            f"Constraint: {rule}",
+                            f"Actual value: {actual_value}",
+                        ],
                         suggested_fix=f"Update {subject}'s {attribute} to match the constraint ({expected_value})",
                         confidence=0.85,
                     )
@@ -142,7 +147,9 @@ class ConstraintEngine:
 
         return True
 
-    async def _check_implicit_constraints(self, facts: List[Fact]) -> List[ConsistencyIssue]:
+    async def _check_implicit_constraints(
+        self, facts: List[Fact]
+    ) -> List[ConsistencyIssue]:
         """
         Check for implicit constraints - contradictions within the input itself.
         """
@@ -170,7 +177,10 @@ class ConstraintEngine:
                             level=ConsistencyLevel.INCONSISTENT,
                             description=f"Multiple conflicting values for {subject}.{predicate}: {values}",
                             conflicting_facts=[f.id for f in pred_facts],
-                            evidence=[f"{f.subject} {f.predicate} {f.object}" for f in pred_facts],
+                            evidence=[
+                                f"{f.subject} {f.predicate} {f.object}"
+                                for f in pred_facts
+                            ],
                             suggested_fix=f"Clarify which value is correct for {subject}'s {predicate}",
                             confidence=0.95,
                         )
@@ -212,7 +222,10 @@ class ConstraintEngine:
                     "explanation": f"Found {subject} with expected {attribute}",
                 }
             elif operator == "!=" and subject_in_text and not expected_in_text:
-                return {"satisfied": True, "explanation": f"Found {subject} without {expected}"}
+                return {
+                    "satisfied": True,
+                    "explanation": f"Found {subject} without {expected}",
+                }
 
         return {
             "satisfied": False,

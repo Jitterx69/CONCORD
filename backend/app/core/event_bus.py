@@ -18,7 +18,10 @@ class EventBus:
     def initialize(self, bootstrap_servers: str = "localhost:9092"):
         """Initialize the Kafka producer"""
         try:
-            conf = {"bootstrap.servers": bootstrap_servers, "client.id": "concord-backend-producer"}
+            conf = {
+                "bootstrap.servers": bootstrap_servers,
+                "client.id": "concord-backend-producer",
+            }
             self.producer = Producer(conf)
             logger.info(f"✅ Connected to Kafka at {bootstrap_servers}")
         except Exception as e:
@@ -35,7 +38,9 @@ class EventBus:
             if err is not None:
                 logger.error(f"❌ Message delivery failed: {err}")
             else:
-                logger.debug(f"✅ Message delivered to {msg.topic()} [{msg.partition()}]")
+                logger.debug(
+                    f"✅ Message delivered to {msg.topic()} [{msg.partition()}]"
+                )
 
         try:
             self.producer.produce(

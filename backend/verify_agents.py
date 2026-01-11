@@ -23,7 +23,9 @@ def main():
 
     # 2. Seed Memory
     print("Seeding memory...")
-    engine.memory.remember(profile.entity_id, "I promised my mother I would never hurt anyone.")
+    engine.memory.remember(
+        profile.entity_id, "I promised my mother I would never hurt anyone."
+    )
 
     # 3. Test Consistency: CONSISTENT Action
     print("\n--- Test 1: Consistent Action ---")

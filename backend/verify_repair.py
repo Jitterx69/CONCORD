@@ -19,7 +19,9 @@ async def main():
     # Setup: Parent (Poison) -> Child (Stab Wound [INVALID])
     print("Setup: Parent (Poison) -> Child (Stab Wound [INVALID])")
 
-    parent_fact = Fact(subject="Killer", predicate="used", object="poison", validity_status="valid")
+    parent_fact = Fact(
+        subject="Killer", predicate="used", object="poison", validity_status="valid"
+    )
     await kg.add_fact(parent_fact)
 
     child_fact = Fact(
@@ -31,7 +33,9 @@ async def main():
     )
     await kg.add_fact(child_fact)
 
-    print(f"Child Fact Before Repair: {child_fact.object} ({child_fact.validity_status})")
+    print(
+        f"Child Fact Before Repair: {child_fact.object} ({child_fact.validity_status})"
+    )
 
     # Repair
     print("\n--- Repairing Child Fact ---")
@@ -39,11 +43,19 @@ async def main():
     print(f"Repair Result: {result}")
 
     # Check
-    print(f"Child Fact After Repair: {child_fact.object} ({child_fact.validity_status})")
+    print(
+        f"Child Fact After Repair: {child_fact.object} ({child_fact.validity_status})"
+    )
 
-    if child_fact.validity_status == FactValidity.VALID and "poison" in str(result).lower():
+    if (
+        child_fact.validity_status == FactValidity.VALID
+        and "poison" in str(result).lower()
+    ):
         print("SUCCESS: Fact was updated to match poison context")
-    elif child_fact.validity_status == FactValidity.VALID and "delete" in str(result).lower():
+    elif (
+        child_fact.validity_status == FactValidity.VALID
+        and "delete" in str(result).lower()
+    ):
         print("SUCCESS: Fact was correctly identified for deletion")
     else:
         print("Note: LLM output varies, but status should be VALID or fact removed.")

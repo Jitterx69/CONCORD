@@ -22,7 +22,9 @@ class StateManager:
     def get_active_worlds(self) -> List[WorldState]:
         return [w for w in self.worlds.values() if w.active]
 
-    def fork_world(self, parent_world_id: UUID, name: str, divergence_fact_id: UUID) -> WorldState:
+    def fork_world(
+        self, parent_world_id: UUID, name: str, divergence_fact_id: UUID
+    ) -> WorldState:
         """
         Create a new world state branching off from a parent state.
         The probability is initially split or assigned (managed by ProbabilityEngine).

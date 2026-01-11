@@ -134,11 +134,13 @@ async def add_relationship(relationship: Relationship, req: Request):
 
     if not source:
         raise HTTPException(
-            status_code=404, detail=f"Source entity {relationship.source_entity_id} not found"
+            status_code=404,
+            detail=f"Source entity {relationship.source_entity_id} not found",
         )
     if not target:
         raise HTTPException(
-            status_code=404, detail=f"Target entity {relationship.target_entity_id} not found"
+            status_code=404,
+            detail=f"Target entity {relationship.target_entity_id} not found",
         )
 
     await knowledge_graph.add_relationship(relationship)
@@ -159,7 +161,12 @@ async def get_graph_data(req: Request):
 
     # Transform for visualization
     nodes = [
-        {"id": str(e.id), "label": e.name, "type": e.type.value, "attributes": e.attributes}
+        {
+            "id": str(e.id),
+            "label": e.name,
+            "type": e.type.value,
+            "attributes": e.attributes,
+        }
         for e in entities
     ]
 
@@ -174,7 +181,12 @@ async def get_graph_data(req: Request):
         for r in relationships
     ]
 
-    return {"nodes": nodes, "edges": edges, "node_count": len(nodes), "edge_count": len(edges)}
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "node_count": len(nodes),
+        "edge_count": len(edges),
+    }
 
 
 @router.post("/knowledge/query")

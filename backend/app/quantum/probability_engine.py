@@ -28,7 +28,10 @@ class ProbabilityEngine:
                 w.probability = w.probability / total_p
 
     def update_probabilities(
-        self, worlds: List[WorldState], evidence_fact: Fact, supporting_world_ids: List[UUID]
+        self,
+        worlds: List[WorldState],
+        evidence_fact: Fact,
+        supporting_world_ids: List[UUID],
     ) -> None:
         """
         Update probabilities based on new evidence.

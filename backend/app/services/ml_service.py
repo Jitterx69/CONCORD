@@ -154,17 +154,23 @@ class MLService:
         # Try to extract attributes for characters
         for entity in entities:
             if entity.type == EntityType.CHARACTER:
-                entity.attributes = await self._extract_character_attributes(text, entity.name)
+                entity.attributes = await self._extract_character_attributes(
+                    text, entity.name
+                )
 
         return entities
 
-    async def _extract_character_attributes(self, text: str, name: str) -> Dict[str, Any]:
+    async def _extract_character_attributes(
+        self, text: str, name: str
+    ) -> Dict[str, Any]:
         """Extract attributes for a character from text."""
         attributes = {}
         name_lower = name.lower()
 
         # Age pattern
-        age_match = re.search(rf"{name}\s+(?:is|was)\s+(\d+)\s+years?\s+old", text, re.IGNORECASE)
+        age_match = re.search(
+            rf"{name}\s+(?:is|was)\s+(\d+)\s+years?\s+old", text, re.IGNORECASE
+        )
         if age_match:
             attributes["age"] = int(age_match.group(1))
 
@@ -256,8 +262,12 @@ class MLService:
             sentence_lower = sentence.lower()
 
             # Count sentiment words
-            positive_count = sum(1 for word in self.POSITIVE_WORDS if word in sentence_lower)
-            negative_count = sum(1 for word in self.NEGATIVE_WORDS if word in sentence_lower)
+            positive_count = sum(
+                1 for word in self.POSITIVE_WORDS if word in sentence_lower
+            )
+            negative_count = sum(
+                1 for word in self.NEGATIVE_WORDS if word in sentence_lower
+            )
 
             overall_positive += positive_count
             overall_negative += negative_count
@@ -292,7 +302,10 @@ class MLService:
                     emotions[emotion] = 0.8
 
             state = EmotionalState(
-                sentiment=sentiment, sentiment_score=score, emotions=emotions, position=pos
+                sentiment=sentiment,
+                sentiment_score=score,
+                emotions=emotions,
+                position=pos,
             )
             states.append(state)
 
@@ -309,7 +322,9 @@ class MLService:
         if len(states) > 1:
             scores = [s.sentiment_score for s in states if s.sentiment_score != 0]
             if scores:
-                variance = sum((s - sum(scores) / len(scores)) ** 2 for s in scores) / len(scores)
+                variance = sum(
+                    (s - sum(scores) / len(scores)) ** 2 for s in scores
+                ) / len(scores)
                 tone_consistency = max(0.0, 1.0 - variance)
             else:
                 tone_consistency = 1.0
@@ -367,7 +382,9 @@ class MLService:
             return {"type": "exists", "subject": who_is_match.group(1).title()}
 
         # "Does X exist?" pattern
-        exists_match = re.search(r"(?:does|is)\s+(\w+)\s+(?:exist|mentioned)", query_lower)
+        exists_match = re.search(
+            r"(?:does|is)\s+(\w+)\s+(?:exist|mentioned)", query_lower
+        )
         if exists_match:
             return {"type": "exists", "subject": exists_match.group(1).title()}
 
@@ -401,7 +418,20 @@ class MLService:
         words2 = set(text2.lower().split())
 
         # Remove stopwords
-        stopwords = {"the", "a", "an", "is", "was", "were", "are", "in", "on", "at", "to", "for"}
+        stopwords = {
+            "the",
+            "a",
+            "an",
+            "is",
+            "was",
+            "were",
+            "are",
+            "in",
+            "on",
+            "at",
+            "to",
+            "for",
+        }
         words1 -= stopwords
         words2 -= stopwords
 

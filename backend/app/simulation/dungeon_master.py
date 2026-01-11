@@ -51,9 +51,9 @@ Outcome:"""
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024).to(
-            self.device
-        )
+        inputs = self.tokenizer(
+            prompt, return_tensors="pt", truncation=True, max_length=1024
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.model.generate(
@@ -65,7 +65,9 @@ Outcome:"""
         ).strip()
         return response
 
-    def check_feasibility(self, character: str, action: str, world_context: str) -> bool:
+    def check_feasibility(
+        self, character: str, action: str, world_context: str
+    ) -> bool:
         """
         Checks if an action is physically/logically possible.
         """
@@ -87,15 +89,17 @@ Verdict:"""
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024).to(
-            self.device
-        )
+        inputs = self.tokenizer(
+            prompt, return_tensors="pt", truncation=True, max_length=1024
+        ).to(self.device)
 
         with torch.no_grad():
             outputs = self.model.generate(**inputs, max_new_tokens=10, do_sample=False)
 
         response = (
-            self.tokenizer.decode(outputs[0][inputs.input_ids.shape[1] :], skip_special_tokens=True)
+            self.tokenizer.decode(
+                outputs[0][inputs.input_ids.shape[1] :], skip_special_tokens=True
+            )
             .strip()
             .upper()
         )

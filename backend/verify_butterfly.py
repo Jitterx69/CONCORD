@@ -19,7 +19,9 @@ async def main():
     # 1. Setup Chain: A -> B -> C
     print("Creating causal chain: A -> B -> C")
 
-    fact_a = Fact(subject="Killer", predicate="used", object="knife", validity_status="valid")
+    fact_a = Fact(
+        subject="Killer", predicate="used", object="knife", validity_status="valid"
+    )
     await kg.add_fact(fact_a)
 
     fact_b = Fact(

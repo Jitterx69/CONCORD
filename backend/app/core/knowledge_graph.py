@@ -245,7 +245,9 @@ class KnowledgeGraph:
                         results.append(
                             {
                                 "relationship": rel.relationship_type,
-                                "entity": other_entity.name if other_entity else "Unknown",
+                                "entity": (
+                                    other_entity.name if other_entity else "Unknown"
+                                ),
                                 "properties": rel.properties,
                             }
                         )
@@ -253,7 +255,10 @@ class KnowledgeGraph:
         elif query_type == "exists":
             entity = await self.find_entity_by_name(subject)
             results.append(
-                {"exists": entity is not None, "entity": entity.dict() if entity else None}
+                {
+                    "exists": entity is not None,
+                    "entity": entity.dict() if entity else None,
+                }
             )
 
         return results

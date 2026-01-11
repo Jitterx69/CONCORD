@@ -23,7 +23,12 @@ class SimulationEngine:
         """snapshot the initial state"""
         snapshot = await self.kg.create_snapshot()
         self.history.append(
-            {"step": 0, "snapshot": snapshot, "action": "INIT", "narrative": "Simulation started."}
+            {
+                "step": 0,
+                "snapshot": snapshot,
+                "action": "INIT",
+                "narrative": "Simulation started.",
+            }
         )
 
     async def process_action(self, character: str, action: str) -> Dict[str, Any]:
@@ -60,8 +65,12 @@ class SimulationEngine:
                 p1 = (0.0, 0.0, 0.0)
                 p2 = (5.0, 5.0, 0.0)
                 mode = "running" if "run" in action else "walking"
-                time_mins = self.phys_lib.api_estimate_travel_time(*p1, *p2, mode.encode("utf-8"))
-                print(f"🚀 C++ Physics Engine: Estimated {mode} time = {time_mins:.2f} mins")
+                time_mins = self.phys_lib.api_estimate_travel_time(
+                    *p1, *p2, mode.encode("utf-8")
+                )
+                print(
+                    f"🚀 C++ Physics Engine: Estimated {mode} time = {time_mins:.2f} mins"
+                )
 
         except Exception as e:
             print(f"⚠️ Could not load C++ Physics Engine: {e}")
@@ -78,10 +87,14 @@ class SimulationEngine:
 
         # Simplified context construction
         context_facts = await self.kg.get_facts(limit=10)
-        context_str = "\n".join([f"- {f.subject} {f.predicate} {f.object}" for f in context_facts])
+        context_str = "\n".join(
+            [f"- {f.subject} {f.predicate} {f.object}" for f in context_facts]
+        )
 
         # 2. Check Feasibility
-        is_possible = self.dm.check_feasibility(character_name, action_description, context_str)
+        is_possible = self.dm.check_feasibility(
+            character_name, action_description, context_str
+        )
         if not is_possible:
             return {
                 "success": False,
@@ -90,7 +103,9 @@ class SimulationEngine:
             }
 
         # 3. Narrate Outcome
-        narrative = self.dm.narrate_outcome(character_name, action_description, context_str)
+        narrative = self.dm.narrate_outcome(
+            character_name, action_description, context_str
+        )
 
         # 4. Snapshot state BEFORE applying changes (or after? Usually we snapshot the result)
         # Let's snapshot the NEW state.
