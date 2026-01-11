@@ -1,8 +1,5 @@
-use pyo3::prelude::*;
-use rayon::prelude::*;
-use std::collections::{HashMap, HashSet};
-
 #![allow(non_local_definitions)] // Suppress pyo3 macro warning
+use pyo3::prelude::*;
 
 #[pyclass]
 #[derive(Clone, Debug)]
