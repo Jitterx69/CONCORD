@@ -5,6 +5,7 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class EventBus:
     _instance = None
 
@@ -17,10 +18,7 @@ class EventBus:
     def initialize(self, bootstrap_servers: str = "localhost:9092"):
         """Initialize the Kafka producer"""
         try:
-            conf = {
-                'bootstrap.servers': bootstrap_servers,
-                'client.id': 'concord-backend-producer'
-            }
+            conf = {"bootstrap.servers": bootstrap_servers, "client.id": "concord-backend-producer"}
             self.producer = Producer(conf)
             logger.info(f"✅ Connected to Kafka at {bootstrap_servers}")
         except Exception as e:
@@ -41,9 +39,7 @@ class EventBus:
 
         try:
             self.producer.produce(
-                topic, 
-                json.dumps(payload).encode('utf-8'), 
-                callback=delivery_report
+                topic, json.dumps(payload).encode("utf-8"), callback=delivery_report
             )
             # self.producer.flush() # Blocking, use poll() in production for throughput
             self.producer.poll(0)

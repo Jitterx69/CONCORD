@@ -11,11 +11,7 @@ router = APIRouter()
 @router.get("/health")
 async def health_check():
     """Basic health check endpoint"""
-    return {
-        "status": "healthy",
-        "service": "CONCORD",
-        "timestamp": datetime.utcnow().isoformat()
-    }
+    return {"status": "healthy", "service": "CONCORD", "timestamp": datetime.utcnow().isoformat()}
 
 
 @router.get("/health/ready")
@@ -27,8 +23,8 @@ async def readiness_check():
             "api": "up",
             "knowledge_graph": "up",
             "constraint_engine": "up",
-            "ml_service": "up"
-        }
+            "ml_service": "up",
+        },
     }
 
 

@@ -6,14 +6,16 @@ from app.models import Fact
 
 router = APIRouter()
 
+
 @router.get("/trace/{fact_id}")
 async def trace_dependencies(fact_id: UUID):
     """Trace downstream dependencies of a fact"""
     return {
         "fact_id": fact_id,
-        "dependents": ["uuid-1", "uuid-2"], # Mock for PoC integration
-        "status": "valid"
+        "dependents": ["uuid-1", "uuid-2"],  # Mock for PoC integration
+        "status": "valid",
     }
+
 
 @router.post("/repair/{fact_id}")
 async def repair_fact(fact_id: UUID):
@@ -21,5 +23,5 @@ async def repair_fact(fact_id: UUID):
     return {
         "fact_id": fact_id,
         "repair_status": "repaired",
-        "suggestion": "Keep but modify context"
+        "suggestion": "Keep but modify context",
     }

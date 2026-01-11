@@ -11,8 +11,10 @@ from uuid import UUID, uuid4
 
 # ============== Enums ==============
 
+
 class EntityType(str, Enum):
     """Types of entities in a narrative"""
+
     CHARACTER = "character"
     LOCATION = "location"
     OBJECT = "object"
@@ -23,6 +25,7 @@ class EntityType(str, Enum):
 
 class ConstraintType(str, Enum):
     """Types of constraints for consistency checking"""
+
     FACTUAL = "factual"
     TEMPORAL = "temporal"
     CAUSAL = "causal"
@@ -33,6 +36,7 @@ class ConstraintType(str, Enum):
 
 class ConsistencyLevel(str, Enum):
     """Consistency check result levels"""
+
     CONSISTENT = "consistent"
     WARNING = "warning"
     INCONSISTENT = "inconsistent"
@@ -41,6 +45,7 @@ class ConsistencyLevel(str, Enum):
 
 class SentimentType(str, Enum):
     """Sentiment categories for emotional analysis"""
+
     POSITIVE = "positive"
     NEGATIVE = "negative"
     NEUTRAL = "neutral"
@@ -48,49 +53,54 @@ class SentimentType(str, Enum):
 
 # ============== Entity Models ==============
 
+
 class Entity(BaseModel):
     """Represents an entity in the narrative"""
+
     id: UUID = Field(default_factory=uuid4)
     name: str
     type: EntityType
     attributes: Dict[str, Any] = Field(default_factory=dict)
     first_appearance: Optional[int] = None  # Line/position of first mention
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     class Config:
         json_schema_extra = {
             "example": {
                 "name": "Alice",
                 "type": "character",
-                "attributes": {"age": 25, "occupation": "detective", "hair_color": "brown"}
+                "attributes": {"age": 25, "occupation": "detective", "hair_color": "brown"},
             }
         }
 
 
 class Relationship(BaseModel):
     """Represents a relationship between entities"""
+
     id: UUID = Field(default_factory=uuid4)
     source_entity_id: UUID
     target_entity_id: UUID
     relationship_type: str
     properties: Dict[str, Any] = Field(default_factory=dict)
     established_at: Optional[int] = None  # Position where relationship was established
-    
+
     class Config:
         json_schema_extra = {
             "example": {
                 "source_entity_id": "uuid-1",
                 "target_entity_id": "uuid-2",
                 "relationship_type": "friend_of",
-                "properties": {"since": "childhood"}
+                "properties": {"since": "childhood"},
             }
         }
 
 
 # ============== Constraint Models ==============
 
+
 class Constraint(BaseModel):
     """Represents a constraint/fact in the narrative"""
+
     id: UUID = Field(default_factory=uuid4)
     type: ConstraintType
     description: str
@@ -99,7 +109,7 @@ class Constraint(BaseModel):
     is_hard: bool = True  # Hard constraints must be satisfied; soft can be relaxed
     priority: int = Field(default=5, ge=1, le=10)
     source_position: Optional[int] = None  # Where this constraint was established
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -107,21 +117,22 @@ class Constraint(BaseModel):
                 "description": "Alice is 25 years old",
                 "rule": "entity.Alice.age == 25",
                 "is_hard": True,
-                "priority": 8
+                "priority": 8,
             }
         }
 
 
-
 class FactValidity(str, Enum):
     """Validity status of a fact"""
+
     VALID = "valid"
     INVALID = "invalid"  # Contradicted by newer facts
-    DIRTY = "dirty"      # Potentially invalid, needs checking
+    DIRTY = "dirty"  # Potentially invalid, needs checking
 
 
 class Fact(BaseModel):
     """Represents an established fact in the narrative"""
+
     id: UUID = Field(default_factory=uuid4)
     subject: str
     predicate: str
@@ -130,11 +141,11 @@ class Fact(BaseModel):
     source_text: Optional[str] = None
     position: Optional[int] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     # Causal tracking
     validity_status: FactValidity = FactValidity.VALID
     dependencies: List[UUID] = Field(default_factory=list)  # Facts that caused this fact
-    
+
     # Quantum tracking
     world_id: Optional[UUID] = None  # None = Universal Truth, UUID = Specific World State
 
@@ -146,44 +157,49 @@ class Fact(BaseModel):
                 "object": "detective",
                 "confidence": 1.0,
                 "source_text": "Alice worked as a detective for ten years.",
-                "validity_status": "valid"
+                "validity_status": "valid",
             }
         }
 
 
 # ============== Narrative Models ==============
 
+
 class NarrativeSegment(BaseModel):
     """A segment/chunk of narrative text"""
+
     id: UUID = Field(default_factory=uuid4)
     text: str
     position: int  # Order in the narrative
     entities_mentioned: List[UUID] = Field(default_factory=list)
     facts_established: List[UUID] = Field(default_factory=list)
-    
-    
+
+
 class Narrative(BaseModel):
     """Complete narrative with metadata"""
+
     id: UUID = Field(default_factory=uuid4)
     title: str
     description: Optional[str] = None
     segments: List[NarrativeSegment] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     class Config:
         json_schema_extra = {
             "example": {
                 "title": "The Mystery of the Old Manor",
-                "description": "A detective story set in Victorian England"
+                "description": "A detective story set in Victorian England",
             }
         }
 
 
 # ============== Consistency Models ==============
 
+
 class ConsistencyIssue(BaseModel):
     """Represents a detected consistency issue"""
+
     id: UUID = Field(default_factory=uuid4)
     type: ConstraintType
     level: ConsistencyLevel
@@ -197,6 +213,7 @@ class ConsistencyIssue(BaseModel):
 
 class ConsistencyReport(BaseModel):
     """Complete consistency analysis report"""
+
     id: UUID = Field(default_factory=uuid4)
     narrative_id: UUID
     overall_score: float = Field(ge=0.0, le=1.0)
@@ -207,7 +224,7 @@ class ConsistencyReport(BaseModel):
     entities_tracked: int = 0
     analysis_time_ms: float = 0.0
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     # Breakdown by category
     factual_score: float = Field(default=1.0, ge=0.0, le=1.0)
     temporal_score: float = Field(default=1.0, ge=0.0, le=1.0)
@@ -219,8 +236,10 @@ class ConsistencyReport(BaseModel):
 
 # ============== Emotional Analysis Models ==============
 
+
 class EmotionalState(BaseModel):
     """Emotional state at a point in the narrative"""
+
     sentiment: SentimentType
     sentiment_score: float = Field(ge=-1.0, le=1.0)
     emotions: Dict[str, float] = Field(default_factory=dict)  # emotion -> intensity
@@ -230,6 +249,7 @@ class EmotionalState(BaseModel):
 
 class EmotionalArc(BaseModel):
     """Emotional trajectory over the narrative"""
+
     narrative_id: UUID
     states: List[EmotionalState] = Field(default_factory=list)
     overall_sentiment: SentimentType
@@ -239,27 +259,30 @@ class EmotionalArc(BaseModel):
 
 # ============== Agent/Psychology Models ==============
 
+
 class PsychProfile(BaseModel):
     """Psychological profile for a BDI Agent"""
+
     entity_id: UUID
     personality_traits: List[str] = Field(default_factory=list)  # e.g. ["impulsive", "loyal"]
-    core_values: List[str] = Field(default_factory=list)         # e.g. ["family first", "honesty"]
-    secrets: List[str] = Field(default_factory=list)             # Hidden facts known only to agent
-    goals: List[str] = Field(default_factory=list)               # Current active goals
-    
+    core_values: List[str] = Field(default_factory=list)  # e.g. ["family first", "honesty"]
+    secrets: List[str] = Field(default_factory=list)  # Hidden facts known only to agent
+    goals: List[str] = Field(default_factory=list)  # Current active goals
+
     class Config:
         json_schema_extra = {
             "example": {
                 "entity_id": "uuid-1",
                 "personality_traits": ["brave", "reconless"],
                 "core_values": ["justice"],
-                "goals": ["find the killer"]
+                "goals": ["find the killer"],
             }
         }
 
 
 class WorldState(BaseModel):
     """Represents a quantum world state / narrative theory"""
+
     id: UUID = Field(default_factory=uuid4)
     name: str  # e.g. "Theory A: Butler did it"
     probability: float = Field(default=1.0, ge=0.0, le=1.0)
@@ -270,27 +293,30 @@ class WorldState(BaseModel):
 
 # ============== Request/Response Models ==============
 
+
 class ConsistencyCheckRequest(BaseModel):
     """Request to check narrative consistency"""
+
     text: str
     existing_facts: Optional[List[Fact]] = None
     check_emotional: bool = True
     check_temporal: bool = True
     auto_fix: bool = False
-    
+
     class Config:
         json_schema_extra = {
             "example": {
                 "text": "Alice walked into the room. She was 25 years old. Later, Alice mentioned she had just turned 30.",
                 "check_emotional": True,
                 "check_temporal": True,
-                "auto_fix": False
+                "auto_fix": False,
             }
         }
 
 
 class ConsistencyCheckResponse(BaseModel):
     """Response from consistency check"""
+
     report: ConsistencyReport
     emotional_arc: Optional[EmotionalArc] = None
     suggested_fixes: List[str] = Field(default_factory=list)
@@ -299,6 +325,7 @@ class ConsistencyCheckResponse(BaseModel):
 
 class AddFactRequest(BaseModel):
     """Request to add a fact to knowledge graph"""
+
     subject: str
     predicate: str
     object: str
@@ -307,6 +334,7 @@ class AddFactRequest(BaseModel):
 
 class NarrativeCreateRequest(BaseModel):
     """Request to create a new narrative"""
+
     title: str
     description: Optional[str] = None
     initial_text: Optional[str] = None
@@ -314,5 +342,6 @@ class NarrativeCreateRequest(BaseModel):
 
 class NarrativeUpdateRequest(BaseModel):
     """Request to update/append to narrative"""
+
     text: str
     position: Optional[int] = None  # Position to insert; None = append

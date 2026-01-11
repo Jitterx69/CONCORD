@@ -6,14 +6,12 @@ from app.models import PsychProfile
 
 router = APIRouter()
 
+
 @router.get("/profile/{entity_id}")
 async def get_psych_profile(entity_id: UUID):
     """Get the psychological profile of an agent"""
-    return {
-        "entity_id": entity_id,
-        "traits": ["brave", "loyal"],
-        "goals": ["protect the queen"]
-    }
+    return {"entity_id": entity_id, "traits": ["brave", "loyal"], "goals": ["protect the queen"]}
+
 
 @router.post("/check-consistency")
 async def check_agent_consistency(entity_id: UUID, action: str):
@@ -22,5 +20,5 @@ async def check_agent_consistency(entity_id: UUID, action: str):
         "entity_id": entity_id,
         "action": action,
         "verdict": "CONSISTENT",
-        "reasoning": "The action aligns with the trait 'brave'."
+        "reasoning": "The action aligns with the trait 'brave'.",
     }
