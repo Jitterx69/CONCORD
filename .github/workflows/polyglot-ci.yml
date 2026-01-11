@@ -115,7 +115,7 @@ jobs:
         working-directory: cpp_sim
         run: |
           g++ -shared -o libphys.so -fPIC PhysicsEngine.cpp
-          g++ -o test_phys test_physics.cpp
+          g++ -o test_phys test_physics.cpp PhysicsEngine.cpp
           ./test_phys
 
   # -----------------------------------------------------------------------------
