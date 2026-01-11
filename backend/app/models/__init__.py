@@ -16,6 +16,7 @@ from app.models.models import (
     # Constraint Models
     Constraint,
     Fact,
+    FactValidity,
     
     # Narrative Models
     NarrativeSegment,
@@ -25,9 +26,15 @@ from app.models.models import (
     ConsistencyIssue,
     ConsistencyReport,
     
+    # Quantum Models
+    WorldState,
+    
     # Emotional Models
     EmotionalState,
     EmotionalArc,
+
+    # Agent Models
+    PsychProfile,
     
     # Request/Response
     ConsistencyCheckRequest,
@@ -46,6 +53,7 @@ __all__ = [
     "Relationship",
     "Constraint",
     "Fact",
+    "FactValidity",
     "NarrativeSegment",
     "Narrative",
     "ConsistencyIssue",
@@ -57,4 +65,6 @@ __all__ = [
     "AddFactRequest",
     "NarrativeCreateRequest",
     "NarrativeUpdateRequest",
+    "PsychProfile",
+    "WorldState",
 ]

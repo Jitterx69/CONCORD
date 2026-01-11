@@ -1,0 +1,3 @@
+"""
+Quantum-Probabilistic Consistency Engine
+"""

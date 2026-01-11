@@ -1,0 +1,17 @@
+[package]
+name = "concord-rust-core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# PyO3 for Python bindings
+pyo3 = { version = "0.20.0", features = ["extension-module"] }
+# Rayon for parallel graph traversal
+rayon = "1.8"
+# Serde for serialization
+serde = { version = "1.0", features = ["derive"] }
+rdkafka = { version = "0.36", features = ["cmake-build"] }
+tokio = { version = "1", features = ["full"] }

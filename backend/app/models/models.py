@@ -112,6 +112,14 @@ class Constraint(BaseModel):
         }
 
 
+
+class FactValidity(str, Enum):
+    """Validity status of a fact"""
+    VALID = "valid"
+    INVALID = "invalid"  # Contradicted by newer facts
+    DIRTY = "dirty"      # Potentially invalid, needs checking
+
+
 class Fact(BaseModel):
     """Represents an established fact in the narrative"""
     id: UUID = Field(default_factory=uuid4)
@@ -123,6 +131,13 @@ class Fact(BaseModel):
     position: Optional[int] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
+    # Causal tracking
+    validity_status: FactValidity = FactValidity.VALID
+    dependencies: List[UUID] = Field(default_factory=list)  # Facts that caused this fact
+    
+    # Quantum tracking
+    world_id: Optional[UUID] = None  # None = Universal Truth, UUID = Specific World State
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -130,7 +145,8 @@ class Fact(BaseModel):
                 "predicate": "has_occupation",
                 "object": "detective",
                 "confidence": 1.0,
-                "source_text": "Alice worked as a detective for ten years."
+                "source_text": "Alice worked as a detective for ten years.",
+                "validity_status": "valid"
             }
         }
 
@@ -219,6 +235,37 @@ class EmotionalArc(BaseModel):
     overall_sentiment: SentimentType
     tone_consistency_score: float = Field(ge=0.0, le=1.0)
     arc_pattern: Optional[str] = None  # e.g., "rising", "falling", "arc"
+
+
+# ============== Agent/Psychology Models ==============
+
+class PsychProfile(BaseModel):
+    """Psychological profile for a BDI Agent"""
+    entity_id: UUID
+    personality_traits: List[str] = Field(default_factory=list)  # e.g. ["impulsive", "loyal"]
+    core_values: List[str] = Field(default_factory=list)         # e.g. ["family first", "honesty"]
+    secrets: List[str] = Field(default_factory=list)             # Hidden facts known only to agent
+    goals: List[str] = Field(default_factory=list)               # Current active goals
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "entity_id": "uuid-1",
+                "personality_traits": ["brave", "reconless"],
+                "core_values": ["justice"],
+                "goals": ["find the killer"]
+            }
+        }
+
+
+class WorldState(BaseModel):
+    """Represents a quantum world state / narrative theory"""
+    id: UUID = Field(default_factory=uuid4)
+    name: str  # e.g. "Theory A: Butler did it"
+    probability: float = Field(default=1.0, ge=0.0, le=1.0)
+    parent_world_id: Optional[UUID] = None
+    divergence_point_fact_id: Optional[UUID] = None
+    active: bool = True
 
 
 # ============== Request/Response Models ==============

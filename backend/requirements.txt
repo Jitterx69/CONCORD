@@ -17,10 +17,12 @@ aiohttp==3.9.1
 # redis==5.0.1
 
 # ML/NLP (optional - for enhanced mode)
-# transformers==4.36.2
-# torch==2.1.2
-# sentence-transformers==2.2.2
-# spacy==3.7.2
+transformers==4.36.2
+huggingface-hub<0.25.0
+torch==2.1.2
+sentence-transformers==2.2.2
+spacy==3.7.2
+accelerate
 
 # Utilities
 python-multipart==0.0.6

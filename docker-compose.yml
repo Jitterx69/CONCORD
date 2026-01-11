@@ -1,103 +1,74 @@
-# CONCORD Docker Compose Configuration
-# Complete development environment
-
 version: '3.8'
 
 services:
-  # CONCORD Backend API
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: concord-backend
+      context: .
+      dockerfile: Dockerfile.backend
     ports:
       - "8000:8000"
-    environment:
-      - DEBUG=true
-      - DATABASE_URL=postgresql://concord:concord@postgres:5432/concord
-      - NEO4J_URI=bolt://neo4j:7687
-      - NEO4J_USER=neo4j
-      - NEO4J_PASSWORD=concord123
-      - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
+      - ./cpp_sim:/app/cpp_sim
+      - ./c_vector:/app/c_vector
+    environment:
+      - APP_ENV=production
     depends_on:
-      - postgres
-      - redis
-    networks:
-      - concord-network
-    restart: unless-stopped
+      - causal-core
+      - federation-service
 
-  # CONCORD Frontend Dashboard
-  frontend:
+  causal-core:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: concord-frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - VITE_API_URL=http://localhost:8000
+      context: .
+      dockerfile: rust_core/Dockerfile
+    # Expose if we were running a real server
+    # ports:
+    #   - "50051:50051"
+
+  federation-service:
+    build:
+      context: .
+      dockerfile: java_services/Dockerfile
+    # ports:
+    #   - "8080:8080"
+
+  analytics-service:
+    build:
+      context: .
+      dockerfile: r_analytics/Dockerfile
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./r_analytics:/app/r_analytics
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: concord-zookeeper
+    networks:
+      - concord-net
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: concord-kafka
+    networks:
+      - concord-net
     depends_on:
-      - backend
-    networks:
-      - concord-network
-    restart: unless-stopped
-
-  # PostgreSQL Database
-  postgres:
-    image: postgres:16-alpine
-    container_name: concord-postgres
+      - zookeeper
     ports:
-      - "5432:5432"
+      - "9092:9092"
     environment:
-      - POSTGRES_USER=concord
-      - POSTGRES_PASSWORD=concord
-      - POSTGRES_DB=concord
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - concord-network
-    restart: unless-stopped
-
-  # Neo4j Graph Database (for Knowledge Graph)
-  neo4j:
-    image: neo4j:5.15-community
-    container_name: concord-neo4j
-    ports:
-      - "7474:7474" # HTTP
-      - "7687:7687" # Bolt
-    environment:
-      - NEO4J_AUTH=neo4j/concord123
-      - NEO4J_PLUGINS=["apoc"]
-    volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-    networks:
-      - concord-network
-    restart: unless-stopped
-
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    container_name: concord-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - concord-network
-    restart: unless-stopped
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://:29092,PLAINTEXT_HOST://:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "narrative.facts.created:1:1,narrative.facts.invalidated:1:1"
 
 networks:
-  concord-network:
+  concord-net:
     driver: bridge
 
 volumes:
-  postgres_data:
-  neo4j_data:
-  neo4j_logs:
-  redis_data:
+  concord-data:

@@ -1,0 +1,41 @@
+# Multi-stage build not strictly necessary for Python, but good for keeping image clean
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install system dependencies for compiling C/C++
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy C/C++ Source and Compile
+# We assume the context is the root so we can access cpp_sim and c_vector
+COPY cpp_sim /app/cpp_sim
+COPY c_vector /app/c_vector
+
+# Compile Physics Engine (Result: libphys.so)
+WORKDIR /app/cpp_sim
+RUN g++ -shared -o libphys.so -fPIC PhysicsEngine.cpp
+
+# Compile Vector Store (Result: libvector.so)
+WORKDIR /app/c_vector
+RUN gcc -shared -o libvector.so -fPIC vector_store.c
+
+# Copy Backend Source
+WORKDIR /app
+COPY backend /app/backend
+
+# Set Python Path
+ENV PYTHONPATH=/app/backend
+
+# Expose Port
+EXPOSE 8000
+
+# Run
+CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -33,7 +33,8 @@ class KnowledgeGraph:
         self._relationships: Dict[UUID, Relationship] = {}
         self._facts: Dict[UUID, Fact] = {}
         self._fact_index: Dict[str, List[UUID]] = {}  # subject -> fact_ids
-        
+        self._dependent_index: Dict[UUID, List[UUID]] = {}  # fact_id -> list of dependent fact_ids (reverse dependency)
+
     async def add_entity(self, entity: Entity) -> None:
         """Add an entity to the knowledge graph."""
         self._entities[entity.id] = entity
@@ -78,14 +79,43 @@ class KnowledgeGraph:
         """Get all relationships."""
         return list(self._relationships.values())
     
-    async def add_fact(self, fact: Fact) -> None:
-        """Add a fact to the knowledge graph."""
-        self._facts[fact.id] = fact
+    async def add_fact(self, subject: str, predicate: str, object_: str, world_id: Optional[str] = None, dependencies: Optional[List[UUID]] = None) -> Fact:
+        """Add a fact to the graph and publish an event"""
+        fact_id = uuid4()
+        fact = Fact(
+            id=fact_id,
+            subject=subject,
+            predicate=predicate,
+            object=object_,
+            timestamp=datetime.now(),
+            world_id=world_id,
+            validity_status="VALID",
+            dependencies=dependencies if dependencies is not None else []
+        )
+        self._facts[fact_id] = fact
         
         # Index by subject for quick lookup
         if fact.subject not in self._fact_index:
             self._fact_index[fact.subject] = []
         self._fact_index[fact.subject].append(fact.id)
+
+        # Index dependencies (reverse lookup)
+        for dep_id in fact.dependencies:
+            if dep_id not in self._dependent_index:
+                self._dependent_index[dep_id] = []
+            self._dependent_index[dep_id].append(fact.id)
+
+        # Publish Event
+        EventBus().publish("narrative.facts.created", {
+            "fact_id": str(fact_id),
+            "subject": subject,
+            "predicate": predicate,
+            "object": object_,
+            "world_id": world_id,
+            "timestamp": str(fact.timestamp)
+        })
+        
+        return fact
         
     async def get_fact(self, fact_id: UUID) -> Optional[Fact]:
         """Retrieve a fact by ID."""
@@ -95,6 +125,11 @@ class KnowledgeGraph:
         """Get all facts with pagination."""
         facts = list(self._facts.values())
         return facts[offset:offset + limit]
+
+    async def get_dependents(self, fact_id: UUID) -> List[Fact]:
+        """Get all facts that depend on the given fact ID."""
+        dep_ids = self._dependent_index.get(fact_id, [])
+        return [self._facts[fid] for fid in dep_ids if fid in self._facts]
     
     async def get_facts_by_subject(self, subject: str) -> List[Fact]:
         """Get all facts about a subject."""
@@ -115,6 +150,10 @@ class KnowledgeGraph:
                 fid for fid in self._fact_index[fact.subject] 
                 if fid != fact_id
             ]
+
+        # Remove from dependent index
+        if fact_id in self._dependent_index:
+            del self._dependent_index[fact_id]
             
         return True
     
@@ -208,6 +247,7 @@ class KnowledgeGraph:
         self._relationships.clear()
         self._facts.clear()
         self._fact_index.clear()
+        self._dependent_index.clear()
     
     def stats(self) -> Dict[str, int]:
         """Get statistics about the knowledge graph."""
@@ -216,3 +256,23 @@ class KnowledgeGraph:
             "relationships": len(self._relationships),
             "facts": len(self._facts)
         }
+
+    async def create_snapshot(self) -> Dict[str, Any]:
+        """Create a deep copy snapshot of the current graph state."""
+        import copy
+        return {
+            "entities": copy.deepcopy(self._entities),
+            "relationships": copy.deepcopy(self._relationships),
+            "facts": copy.deepcopy(self._facts),
+            "fact_index": copy.deepcopy(self._fact_index),
+            "dependent_index": copy.deepcopy(self._dependent_index)
+        }
+
+    async def restore_snapshot(self, snapshot: Dict[str, Any]) -> None:
+        """Restore the graph state from a snapshot."""
+        import copy
+        self._entities = copy.deepcopy(snapshot["entities"])
+        self._relationships = copy.deepcopy(snapshot["relationships"])
+        self._facts = copy.deepcopy(snapshot["facts"])
+        self._fact_index = copy.deepcopy(snapshot["fact_index"])
+        self._dependent_index = copy.deepcopy(snapshot["dependent_index"])
