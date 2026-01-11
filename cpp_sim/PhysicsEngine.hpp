@@ -2,8 +2,6 @@
 #define PHYSICS_ENGINE_HPP
 
 #include <cmath>
-#include <map>
-#include <set>
 #include <string>
 #include <vector>
 
