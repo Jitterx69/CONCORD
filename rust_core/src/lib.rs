@@ -253,12 +253,14 @@ impl GraphWalker {
 }
 
 impl GraphWalker {
-    fn dfs_cycle(&self, 
-                 current_node: &String, 
-                 visited: &mut HashSet<String>, 
-                 stack: &mut HashSet<String>,
-                 path: &mut Vec<String>,
-                 cycles: &mut Vec<Vec<String>>) {
+    fn dfs_cycle(
+        &self,
+        current_node: &String,
+        visited: &mut HashSet<String>,
+        stack: &mut HashSet<String>,
+        path: &mut Vec<String>,
+        cycles: &mut Vec<Vec<String>>,
+    ) {
         
         visited.insert(current_node.clone());
         stack.insert(current_node.clone());
