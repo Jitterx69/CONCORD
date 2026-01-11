@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-java-federation
+  labels:
+    app: java-federation
+spec:
+  replicas: {{ .Values.javaFederation.replicaCount }}
+  selector:
+    matchLabels:
+      app: java-federation
+  template:
+    metadata:
+      labels:
+        app: java-federation
+    spec:
+      containers:
+        - name: java-federation
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.javaFederation.image.repository }}:{{ .Values.javaFederation.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          # Keep-alive is handled by the application logic now

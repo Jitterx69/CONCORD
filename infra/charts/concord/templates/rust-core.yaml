@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-rust-core
+  labels:
+    app: rust-core
+spec:
+  replicas: {{ .Values.rustCore.replicaCount }}
+  selector:
+    matchLabels:
+      app: rust-core
+  template:
+    metadata:
+      labels:
+        app: rust-core
+    spec:
+      containers:
+        - name: rust-core
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.rustCore.image.repository }}:{{ .Values.rustCore.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          env:
+            - name: KAFKA_BROKERS
+              value: "{{ .Release.Name }}-redpanda:9092"
+          resources:
+            {{- toYaml .Values.rustCore.resources | nindent 12 }}

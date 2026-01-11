@@ -1,0 +1,54 @@
+# Default values for concord.
+# This is a YAML-formatted file.
+
+global:
+  imageRegistry: ghcr.io/jitterx69
+  imagePullPolicy: IfNotPresent
+
+backend:
+  replicaCount: 2
+  image:
+    repository: concord-backend
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+
+rustCore:
+  replicaCount: 1
+  image:
+    repository: concord-causal-core
+    tag: latest
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+
+javaFederation:
+  replicaCount: 3
+  image:
+    repository: concord-federation-service
+    tag: latest
+
+analytics:
+  replicaCount: 1
+  image:
+    repository: concord-analytics-service
+    tag: latest
+
+redpanda:
+  enabled: true
+  auth:
+    enabled: false
+  resources:
+    cpu:
+      cores: 1 # Low resource for demo
+    memory:
+      container: 1Gi
