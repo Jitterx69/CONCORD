@@ -24,7 +24,10 @@ impl GraphWalker {
     }
 
     fn add_node(&mut self, id: String, dependents: Vec<String>) {
-        let node = CausalNode { id: id.clone(), dependents };
+        let node = CausalNode {
+            id: id.clone(),
+            dependents,
+        };
         self.nodes.insert(id, node);
     }
 
@@ -33,14 +36,14 @@ impl GraphWalker {
     fn propagate_invalidation(&self, start_id: String) -> HashSet<String> {
         let mut invalid_set = HashSet::new();
         let mut frontier = vec![start_id];
-        
+
         while !frontier.is_empty() {
             let next_frontier: HashSet<String> = frontier
                 .par_iter()
                 .filter_map(|node_id| self.nodes.get(node_id))
                 .flat_map(|node| node.dependents.clone())
                 .collect();
-                
+
             frontier = Vec::new();
             for item in next_frontier {
                 if invalid_set.insert(item.clone()) {
@@ -48,7 +51,7 @@ impl GraphWalker {
                 }
             }
         }
-        
+
         invalid_set
     }
 
@@ -65,7 +68,13 @@ impl GraphWalker {
 
         for node_id in self.nodes.keys() {
             if !visited.contains(node_id) {
-                self.dfs_cycle(node_id, &mut visited, &mut recursion_stack, &mut path, &mut cycles);
+                self.dfs_cycle(
+                    node_id,
+                    &mut visited,
+                    &mut recursion_stack,
+                    &mut path,
+                    &mut cycles,
+                );
             }
         }
         cycles
@@ -82,11 +91,11 @@ impl GraphWalker {
             if !global_visited.contains(node_id) {
                 let mut community = HashSet::new();
                 let mut stack = vec![node_id.clone()];
-                
+
                 while let Some(current) = stack.pop() {
                     if community.insert(current.clone()) {
                         global_visited.insert(current.clone());
-                        
+
                         if let Some(node) = self.nodes.get(&current) {
                             for dep in &node.dependents {
                                 if !community.contains(dep) {
@@ -104,13 +113,17 @@ impl GraphWalker {
 
     fn calculate_pagerank(&self, iterations: usize, damping: f64) -> HashMap<String, f64> {
         let n = self.nodes.len();
-        if n == 0 { return HashMap::new(); }
-        
+        if n == 0 {
+            return HashMap::new();
+        }
+
         let initial_rank = 1.0 / n as f64;
-        let mut ranks: HashMap<String, f64> = self.nodes.keys()
+        let mut ranks: HashMap<String, f64> = self
+            .nodes
+            .keys()
             .map(|k| (k.clone(), initial_rank))
             .collect();
-        
+
         for _ in 0..iterations {
             let mut new_ranks = HashMap::new();
             for (node_id, _) in &self.nodes {
@@ -118,9 +131,9 @@ impl GraphWalker {
                 // Note: Simplified reverse lookup for MVP. Production would use an adjacency matrix.
                 for (other_id, other_node) in &self.nodes {
                     if other_node.dependents.contains(node_id) {
-                         let other_rank = ranks.get(other_id).unwrap_or(&0.0);
-                         let out_degree = other_node.dependents.len().max(1) as f64;
-                         rank_sum += other_rank / out_degree;
+                        let other_rank = ranks.get(other_id).unwrap_or(&0.0);
+                        let out_degree = other_node.dependents.len().max(1) as f64;
+                        rank_sum += other_rank / out_degree;
                     }
                 }
                 let new_rank = (1.0 - damping) / n as f64 + damping * rank_sum;
@@ -133,17 +146,17 @@ impl GraphWalker {
 
     fn calculate_betweenness(&self) -> HashMap<String, f64> {
         // Degree Centrality proxy for Betweenness
-        self.nodes.iter()
+        self.nodes
+            .iter()
             .map(|(id, node)| (id.clone(), node.dependents.len() as f64))
             .collect()
     }
 
     fn calculate_closeness(&self) -> HashMap<String, f64> {
         // Simple heuristic: Inverse of out-degree
-        self.nodes.iter()
-            .map(|(id, node)| {
-                (id.clone(), 1.0 / (node.dependents.len() as f64 + 1.0))
-            })
+        self.nodes
+            .iter()
+            .map(|(id, node)| (id.clone(), 1.0 / (node.dependents.len() as f64 + 1.0)))
             .collect()
     }
 
@@ -154,8 +167,8 @@ impl GraphWalker {
                 if let Some(node_b) = self.nodes.get(id_b) {
                     for id_c in &node_b.dependents {
                         // Check for A->B->C->A (Directed Cycle)
-                        if id_c == id_a { 
-                             count += 1;
+                        if id_c == id_a {
+                            count += 1;
                         }
                         // Check for Transitive relationship A->B->C and A->C
                         if let Some(node_a_ref) = self.nodes.get(id_a) {
@@ -168,51 +181,69 @@ impl GraphWalker {
             }
         }
         // approximate de-duplication
-        count / 3 
+        count / 3
     }
 
     fn find_cliques(&self) -> usize {
         // Heuristic: Max neighborhood size + 1
-        self.nodes.values()
+        self.nodes
+            .values()
             .map(|n| n.dependents.len())
             .max()
-            .unwrap_or(0) + 1
+            .unwrap_or(0)
+            + 1
     }
 
     fn find_diameter(&self) -> usize {
         let mut max_dist = 0;
         for start_node in self.nodes.keys() {
-             let mut dists = HashMap::new();
-             dists.insert(start_node, 0);
-             let mut queue = vec![start_node];
-             
-             while !queue.is_empty() {
-                 let u = queue.remove(0); // Pop front
-                 let d = *dists.get(u).unwrap();
-                 max_dist = max_dist.max(d);
-                 
-                 if let Some(node) = self.nodes.get(u) {
-                     for v in &node.dependents {
-                         if !dists.contains_key(v) {
-                             dists.insert(v, d + 1);
-                             queue.push(v);
-                         }
-                     }
-                 }
-             }
+            let mut dists = HashMap::new();
+            dists.insert(start_node, 0);
+            let mut queue = vec![start_node];
+
+            while !queue.is_empty() {
+                let u = queue.remove(0); // Pop front
+                let d = *dists.get(u).unwrap();
+                max_dist = max_dist.max(d);
+
+                if let Some(node) = self.nodes.get(u) {
+                    for v in &node.dependents {
+                        if !dists.contains_key(v) {
+                            dists.insert(v, d + 1);
+                            queue.push(v);
+                        }
+                    }
+                }
+            }
         }
         max_dist
     }
 
     fn calculate_jaccard_similarity(&self, node_a: String, node_b: String) -> f64 {
         let empty = Vec::new();
-        let deps_a: HashSet<_> = self.nodes.get(&node_a).map(|n| &n.dependents).unwrap_or(&empty).iter().collect();
-        let deps_b: HashSet<_> = self.nodes.get(&node_b).map(|n| &n.dependents).unwrap_or(&empty).iter().collect();
-        
+        let deps_a: HashSet<_> = self
+            .nodes
+            .get(&node_a)
+            .map(|n| &n.dependents)
+            .unwrap_or(&empty)
+            .iter()
+            .collect();
+        let deps_b: HashSet<_> = self
+            .nodes
+            .get(&node_b)
+            .map(|n| &n.dependents)
+            .unwrap_or(&empty)
+            .iter()
+            .collect();
+
         let intersection = deps_a.intersection(&deps_b).count();
         let union = deps_a.union(&deps_b).count();
-        
-        if union == 0 { 0.0 } else { intersection as f64 / union as f64 }
+
+        if union == 0 {
+            0.0
+        } else {
+            intersection as f64 / union as f64
+        }
     }
 
     fn max_flow(&self, _source: String, _sink: String) -> i32 {
@@ -224,11 +255,11 @@ impl GraphWalker {
         // BFS Tree heuristic for unweighted graph
         let mut edges = HashSet::new();
         let mut visited = HashSet::new();
-        
+
         if let Some(start) = self.nodes.keys().next() {
             let mut queue = vec![start];
             visited.insert(start);
-            
+
             while !queue.is_empty() {
                 let u = queue.remove(0);
                 if let Some(node) = self.nodes.get(u) {
@@ -245,7 +276,8 @@ impl GraphWalker {
     }
 
     fn k_core_decomposition(&self, k: usize) -> Vec<String> {
-        self.nodes.iter()
+        self.nodes
+            .iter()
             .filter(|(_, n)| n.dependents.len() >= k)
             .map(|(id, _)| id.clone())
             .collect()
@@ -261,7 +293,6 @@ impl GraphWalker {
         path: &mut Vec<String>,
         cycles: &mut Vec<Vec<String>>,
     ) {
-        
         visited.insert(current_node.clone());
         stack.insert(current_node.clone());
         path.push(current_node.clone());
