@@ -10,7 +10,7 @@ The system implements a **"System over Model"** philosophy, prioritizing determi
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 CONCORD is built on a distributed, microservices-based architecture, leveraging the strengths of five different programming languages to handle specific aspects of narrative validation:
 
@@ -27,32 +27,32 @@ The system uses **Apache Kafka** for event-driven communication and **Docker Com
 
 ---
 
-## 🚀 Key Features (Mega Expansion)
+## Key Features (Mega Expansion)
 
 The platform has been significantly expanded with over 30+ advanced features across its core services:
 
-### 🦀 Rust Causal Core (`rust_core`)
+### Rust Causal Core (`rust_core`)
 *   **Advanced Graph Algorithms**: PageRank, Betweenness Centrality, Closeness Centrality, K-Core Decomposition.
 *   **Structural Analysis**: Cycle Detection (DFS), Community Detection (Connected Components), Triangle Counting.
 *   **Pathfinding**: Maximum Flow (Edmonds-Karp placeholder), Minimum Spanning Tree, Network Diameter.
 *   **Performance**: Highly optimized, parallel graph traversal using Rayon.
 
-### ☕ Java Federation Service (`java_services`)
+### Java Federation Service (`java_services`)
 *   **Distributed Consensus**: Implements **Raft-Lite** for leader election and log replication.
 *   **Resiliency**: Heartbeat monitoring, Vote Request handling, and Term management.
 *   **Ledger Sync**: Commit indices and AppendEntries logic for ensuring consistency across nodes.
 
-### 📊 R Analytics Engine (`r_analytics`)
+### R Analytics Engine (`r_analytics`)
 *   **Visual Suite**: 10+ Plot types including Sentiment Arcs, Interaction Networks, and Narrative Density.
 *   **Advanced Stats**: Time-series forecasting, Anomaly Detection, and Correlation Matrices.
 *   **Insight Generation**: Automated narrative commentary and probability entropy calculation.
 
-### ⚡ C++ Physics Engine (`cpp_sim`)
+### C++ Physics Engine (`cpp_sim`)
 *   **A* Pathfinding**: Calculates optimal routes across a 3D grid.
 *   **Physical Realism**: Validates travel times based on distance and velocity constraints.
 *   **Integration**: Exposed as a shared library (`libphys.so`) for high-speed Python calls.
 
-### 🧠 Backend Orchestrator (`backend`)
+### Backend Orchestrator (`backend`)
 *   **BDI Agents**: Belief-Desire-Intention model for character psychology.
 *   **Quantum State Manager**: Handles parallel narrative timelines ("World States") and probability divergence.
 *   **Self-Healing**: Suggests repairs for identified causal violations.
@@ -60,7 +60,7 @@ The platform has been significantly expanded with over 30+ advanced features acr
 
 ---
 
-## 🛠️ Installation & Usage
+## Installation & Usage
 
 ### Prerequisites
 *   **Docker** & **Docker Compose** (Required)
@@ -95,7 +95,7 @@ This acts as the single source of truth for deploying the full stack.
 
 ---
 
-## 📂 Directory Structure
+## Directory Structure
 
 ```plaintext
 CONCORD/
@@ -113,7 +113,7 @@ CONCORD/
 
 ---
 
-## 🔍 Code Quality & Methodologies
+## Code Quality & Methodologies
 
 CONCORD adheres to **Enterprise-Grade** coding standards:
 *   **Human-Centric Code**: All components have been refactored for maximum readability, with clear variable names and structured comments.
@@ -126,7 +126,7 @@ CONCORD adheres to **Enterprise-Grade** coding standards:
 
 ---
 
-## 📜 Compliance
+## Compliance
 
 CONCORD adheres to a strict **"No Training"** policy. It uses pre-trained models (DistilGPT2, TinyLlama) purely for zero-shot semantic reasoning, ensuring deterministic and verifiable output without the resource overhead of model fine-tuning.
 
